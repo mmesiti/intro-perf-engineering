@@ -71,9 +71,9 @@ function main()
     all_indices = collect(1:2^21)
     array_ordered = get_self_referential_array_ordered(size(all_indices, 1))
 
-    println("Visting 16MB array in random order:")
+    println("Visiting 16MB array in random order:")
     println("Latency: ", measure_latency(array_random_order))
-    println("Visting 16MB array in ordered manner:")
+    println("Visiting 16MB array in ordered manner:")
     println("Latency: ", measure_latency(array_ordered))
 end
 
