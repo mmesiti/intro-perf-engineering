@@ -4,6 +4,42 @@ There is a myriad of tools that can be used
 to study the performance of applications.
 
 
+```{list-table} Taxonomy of performance analysis techniques}
+* - Technique
+  - Advantages  
+    Disadvantages
+  - Tools
+  - Recommendation
+* - Proflining - Sampling
+  - low overhead  
+    imprecise results
+  - [Perf](https://www.brendangregg.com/perf.html),  
+    Intel VTune,  
+    Julia's Profile
+  - Best for initial assessment
+* - Profiling - Instrumentation
+  - precise results  
+    large overhead 
+  - score-p/scalasca  
+    LIKWID (marker API)  
+    Python's cProfile  
+    gprof  
+    GPU profilers 
+  - choose region/functions  
+    to observe,  
+    estimate overhead from baseline
+* - Tracing
+  - shows time dependency (MPI),  
+    HUGE datasets generated
+  - Intel ITAC,  
+    Nvidia NSight,
+    BSC Extrae,
+    (Score-p)
+  - create mini app  
+    with short run time
+  
+    
+```
 
 - Profiling
 
@@ -18,8 +54,6 @@ to study the performance of applications.
     - Disadvantages: lack of precision 
 
   - Tools:
-
-
     - Intel
     - NVidia
     - AMD
@@ -28,7 +62,6 @@ to study the performance of applications.
     - [perf](https://www.brendangregg.com/perf.html)
     - Score-p, Scalasca and the whole system of tools ([VI-HPS](https://www.vi-hps.org/))
     - gprof
-    - perf
     - LIKWID
 
 - Tracing
@@ -38,8 +71,10 @@ to study the performance of applications.
 
 - Visualization
   - Flame Graph
-  - Gantt plots (timeline)
   - Tree representations
-  - 
+  - Gantt plots (timeline)
+  - Time Series plots
 
-- Performance Modelling
+- Performance Modelling and simulation
+  - Valgrind
+  - Machine Code Analysis
