@@ -113,5 +113,46 @@ Another, more concrete, view of the same approach:
       relevant use cases)
 ```
 
-In what follows, we try to show this loop 
-and 
+## Porting to accelerators and Parallelization
+
+In order for software to run efficiently 
+modern HPC clusters,
+typically it needs to be capable of:
+- using multiple cores on the same host 
+  (shared memory)
+- using multiple nodes 
+  (distributed memory)
+- using accelerators 
+
+Some care must be taken 
+when porting code 
+to take advantage of HPC hardware:
+
+- node-level performance 
+  should be understood 
+  and optimized 
+  before attempting parallelization
+  (it is common that software 
+  that performs poorly at the node level
+  seems to scale well 
+  on multiple nodes).
+- Reaching good performance 
+  on GPU might require 
+  changes not only in the algorithms
+  but also in the in the way 
+  data is stored in memory 
+  (the memory layout). 
+  In general, 
+  performance engineering
+  is an integral part
+  of porting software to another 
+  hardware architecture.
+
+Moreover: notice that 
+the available hardware 
+typically changes every few years,
+and that the useful life 
+of scientific software is typically longer.
+Maintenance costs can be reduced
+by making use of *performance portability frameworks*.
+
