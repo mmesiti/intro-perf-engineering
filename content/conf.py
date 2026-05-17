@@ -23,7 +23,7 @@ author = "Michele Mesiti, Holger Obermaier, Begatim Bytyqi"
 github_user = "mmesiti"
 github_repo_name = "intro-perf-engineering"  # auto-detected from dirname if blank
 github_version = "main"
-conf_py_path = "/content/" # with leading and trailing slash
+conf_py_path = "/content/"  # with leading and trailing slash
 
 # -- General configuration ---------------------------------------------------
 
@@ -37,16 +37,17 @@ extensions = [
     # remove once sphinx_rtd_theme updated for contrast and accessibility:
     "sphinx_rtd_theme_ext_color_contrast",
     "sphinx_coderefinery_branding",
+    "myst_nb",
 ]
 
 
-if 'pdf' in tags:
+if "pdf" in tags:
     # Use imgmath for PDF output
     extensions.append("sphinx.ext.imgmath")
 
 # Settings for myst_nb:
 # https://myst-nb.readthedocs.io/en/latest/use/execute.html#triggering-notebook-execution
-nb_execution_mode = "cache"
+nb_execution_mode = "off"
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
@@ -74,7 +75,7 @@ html_theme = "sphinx_rtd_theme"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-#html_static_path = ['css']
+# html_static_path = ['css']
 
 
 # HTML context:
@@ -91,9 +92,13 @@ html_context = {
 }
 
 import os
-if os.environ.get('GITHUB_REF', '') == 'refs/heads/'+github_version:
+
+if os.environ.get("GITHUB_REF", "") == "refs/heads/" + github_version:
     html_js_files = [
-        ('https://plausible.cs.aalto.fi/js/script.js', {"data-domain": "coderefinery.github.io", "defer": "defer"}),
+        (
+            "https://plausible.cs.aalto.fi/js/script.js",
+            {"data-domain": "coderefinery.github.io", "defer": "defer"},
+        ),
     ]
 
 # Intersphinx mapping.  For example, with this you can use

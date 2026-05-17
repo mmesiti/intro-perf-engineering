@@ -41,6 +41,7 @@ caption: Episodes
 loop
 application-diagnostics
 computer-architecture
+notebooks/likwid.ipynb
 compilers
 sources-of-irreproducibility
 
@@ -53,3 +54,14 @@ The current course material is inspired by and based on:
   by Holger Obermaier and Begatim Bytyqi from KIT 
 - The material for [*Node Level Performance Engineering*](https://moodle.nhr.fau.de/course/view.php?id=55) course at HLRS
 - The [Algorithmica.org](https://en.algorithmica.org/) book/website by Sergej Slotin
+
+
+```{toctree}
+---
+maxdepth: 1
+caption: Supplementary Material
+---
+
+pointer-chasing-and-latency
+
+```
