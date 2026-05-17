@@ -9,7 +9,7 @@ using Printf
 using JLD2
 
 function main(measure_again)
-    #minimal_random_vs_ordered_comparison() 
+    minimal_random_vs_ordered_comparison() 
 
     array_sizes,measurements = if measure_again get_data() else read_data() end
 

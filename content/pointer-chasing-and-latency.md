@@ -39,6 +39,19 @@ is:
 :lines: 99-110
 ```
 
+A quick experiment: on my laptop,
+hopping through a 16MB array 
+(enough to be on main memory)
+in an ordered way
+requires 
+1.2ns of latency per access on average,
+while doing the same
+in a totally random order
+requires
+69ns of latency per access on average.
+
+
+
 ## A simple latency model
 
 The average latency will be 
