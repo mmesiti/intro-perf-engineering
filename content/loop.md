@@ -113,7 +113,22 @@ Another, more concrete, view of the same approach:
       relevant use cases)
 ```
 
-## Porting to accelerators and Parallelization
+
+It is also important:
+
+- to keep track of the progress 
+  done during the iterations of the performance optimization loop
+  and of the information (or lack thereof)
+  that have influenced any decision.
+  This can be done, for example, 
+  with a [logbook](https://github.com/RRZE-HPC/ThePerformanceLogbook/blob/master/Template/logbook.md).
+- to strive for performance reproducibility,
+  keeping all [sources of performance irreproducibility](./sources-of-irreproducibility.md)
+  under control
+ 
+
+
+## Porting to accelerators, Parallelization and performance engineering
 
 In order for software to run efficiently 
 modern HPC clusters,
