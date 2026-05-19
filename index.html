@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to Performance Engineering &mdash; Introduction to Performance Engineering  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=949a1ff5" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx_lesson.css?v=e9df6548" />
+      <link rel="stylesheet" type="text/css" href="_static/term_role_formatting.css?v=4194e21c" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx_rtd_theme_ext_color_contrast.css?v=8e8ea19f" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=187304be"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=582ca9e2"></script>
+      <script src="_static/minipres.js?v=a0d29692"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="_static/togglebutton.js?v=b8b12719"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script data-domain="coderefinery.github.io" defer="defer" src="https://plausible.cs.aalto.fi/js/script.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex/" />
+    <link rel="search" title="Search" href="search/" />
+    <link rel="next" title="The closed loop of performance tuning" href="loop/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Introduction to Performance Engineering
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Episodes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="loop/">The closed loop of performance tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="application-diagnostics/">Performance Characterization of applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/matmul/">Walkthrough: Dense Matrix-Matrix multiplications (Part 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="computer-architecture/">Elements of Computer Architecture and their effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/likwid/">A brief LIKWID demo: topology and microbenchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilers/">What a compiler (and the hardware) can do for you</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources-of-irreproducibility/">Reproducibility problems in performance measurements</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pointer-chasing-and-latency/">Pointer Chasing and latency</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Introduction to Performance Engineering</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction to Performance Engineering</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/mmesiti/intro-perf-engineering/blob/main/content/index.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction-to-performance-engineering">
+<h1>Introduction to Performance Engineering<a class="headerlink" href="#introduction-to-performance-engineering" title="Link to this heading"></a></h1>
+<p>Performance engineering is a complex activity,
+which is based on existing, fundamental knowledge,
+but also requires active investigation.</p>
+<p>The goal typically is to reduce the consumption of resources
+(be it time, compute time or energy - this is getting more and more important)
+for a given computational task.</p>
+<p>This brief introductory courses aims to:</p>
+<ul class="simple">
+<li><p>give an overview of the knowledge required
+to do performance engineering work,
+in the spirit of reducing the
+<em>unknown unknowns</em> for beginners,
+with a focus on HPC and scientific computing;</p></li>
+<li><p>discuss the tools to analyze application behaviour
+in the most common programming languages
+used in HPC in the field of scientific research
+(profiling, tracing);</p></li>
+<li><p>give elementary notions of computer architecture,
+including CPU, memory systems, GPU and Filesystem,
+which sets the maximum performance that can be achieved;</p></li>
+<li><p>give a hands-on demonstration of the performance optimization loop.</p></li>
+</ul>
+<p>The choice of topics is based
+on the sources of inspiration (see below)
+and on the personal experiences
+of the maintainers of this lesson,
+with a slight bias - which must be acknowledged and managed -
+towards <em>interesting</em> problems.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Episodes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="loop/">The closed loop of performance tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="application-diagnostics/">Performance Characterization of applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/matmul/">Walkthrough: Dense Matrix-Matrix multiplications (Part 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="computer-architecture/">Elements of Computer Architecture and their effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/likwid/">A brief LIKWID demo: topology and microbenchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilers/">What a compiler (and the hardware) can do for you</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources-of-irreproducibility/">Reproducibility problems in performance measurements</a></li>
+</ul>
+</div>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading"></a></h2>
+<p>The current course material is inspired by and based on:</p>
+<ul class="simple">
+<li><p>The course <a class="reference external" href="https://indico.kit.edu/event/3507/"><em>Introduction to Performance Engineering on HPC</em></a>
+by Holger Obermaier and Begatim Bytyqi from KIT</p></li>
+<li><p>The material for <a class="reference external" href="https://moodle.nhr.fau.de/course/view.php?id=55"><em>Node Level Performance Engineering</em></a> course at HLRS</p></li>
+<li><p>The <a class="reference external" href="https://en.algorithmica.org/">Algorithmica.org</a> book/website by Sergej Slotin</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Supplementary Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pointer-chasing-and-latency/">Pointer Chasing and latency</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="loop/" class="btn btn-neutral float-right" title="The closed loop of performance tuning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Michele Mesiti, Holger Obermaier, Begatim Bytyqi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

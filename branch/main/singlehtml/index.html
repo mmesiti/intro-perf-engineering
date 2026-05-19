@@ -1,0 +1,1899 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to Performance Engineering documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx_lesson.css" />
+      <link rel="stylesheet" type="text/css" href="_static/term_role_formatting.css" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx_rtd_theme_ext_color_contrast.css" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js"></script>
+      <script src="_static/doctools.js"></script>
+      <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/clipboard.min.js"></script>
+      <script src="_static/copybutton.js"></script>
+      <script src="_static/minipres.js"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="_static/togglebutton.js"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script data-domain="coderefinery.github.io" defer="defer" src="https://plausible.cs.aalto.fi/js/script.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Introduction to Performance Engineering
+          </a>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Episodes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="#document-loop">The closed loop of performance tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#document-application-diagnostics">Performance Characterization of applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#document-notebooks/matmul">Walkthrough: Dense Matrix-Matrix multiplications (Part 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#document-computer-architecture">Elements of Computer Architecture and their effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#document-notebooks/likwid">A brief LIKWID demo: topology and microbenchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#document-compilers">What a compiler (and the hardware) can do for you</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#document-sources-of-irreproducibility">Reproducibility problems in performance measurements</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="#document-pointer-chasing-and-latency">Pointer Chasing and latency</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Introduction to Performance Engineering</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction to Performance Engineering  documentation</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/mmesiti/intro-perf-engineering/blob/main/content/index" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction-to-performance-engineering">
+<h1>Introduction to Performance Engineering<a class="headerlink" href="#introduction-to-performance-engineering" title="Link to this heading"></a></h1>
+<p>Performance engineering is a complex activity,
+which is based on existing, fundamental knowledge,
+but also requires active investigation.</p>
+<p>The goal typically is to reduce the consumption of resources
+(be it time, compute time or energy - this is getting more and more important)
+for a given computational task.</p>
+<p>This brief introductory courses aims to:</p>
+<ul class="simple">
+<li><p>give an overview of the knowledge required
+to do performance engineering work,
+in the spirit of reducing the
+<em>unknown unknowns</em> for beginners,
+with a focus on HPC and scientific computing;</p></li>
+<li><p>discuss the tools to analyze application behaviour
+in the most common programming languages
+used in HPC in the field of scientific research
+(profiling, tracing);</p></li>
+<li><p>give elementary notions of computer architecture,
+including CPU, memory systems, GPU and Filesystem,
+which sets the maximum performance that can be achieved;</p></li>
+<li><p>give a hands-on demonstration of the performance optimization loop.</p></li>
+</ul>
+<p>The choice of topics is based
+on the sources of inspiration (see below)
+and on the personal experiences
+of the maintainers of this lesson,
+with a slight bias - which must be acknowledged and managed -
+towards <em>interesting</em> problems.</p>
+<div class="toctree-wrapper compound">
+<span id="document-loop"></span><section id="the-closed-loop-of-performance-tuning">
+<h2>The closed loop of performance tuning<a class="headerlink" href="#the-closed-loop-of-performance-tuning" title="Link to this heading"></a></h2>
+<section id="before-starting-ensuring-correctness">
+<h3>Before starting: ensuring correctness<a class="headerlink" href="#before-starting-ensuring-correctness" title="Link to this heading"></a></h3>
+<p>Performance tuning requires to change
+the software in some way,
+and this might unadvertently break it.</p>
+<div class="admonition-discussion discussion important admonition" id="discussion-0">
+<p class="admonition-title">Discussion</p>
+<p>What do you think it is the most practical way
+to guarantee that the performance optimization work
+does not break the code?</p>
+<p>How often would you check?</p>
+<div class="admonition-possible-approaches-but-let-us-discuss-first solution important dropdown admonition" id="solution-0">
+<p class="admonition-title">Possible approaches (but let us discuss first)</p>
+<p>The more frequent the testing,
+the less the work needed to find the cause of a bug,
+but the more the testing overhead.</p>
+<p>For this reason, it would be ideal to have tests that:</p>
+<ul class="simple">
+<li><p>do not require manual inspection of the result
+(full automation)</p></li>
+<li><p>take very little time to run</p></li>
+<li><p>are as comprehensive as possible</p></li>
+<li><p>do not take much time to write and maintain</p></li>
+</ul>
+<p>These aspects are obviously in contrast with each other:
+a reasonable balance must be struck,
+and it is typically down to personal preferences and experience.</p>
+<p>In the absence of pre-existing tests,
+a common approach
+(typically used to ensure correctness)
+is to write <a class="reference external" href="https://en.wikipedia.org/wiki/Characterization_test"><em>characterisation tests</em></a>:</p>
+<ol class="arabic simple">
+<li><p>save/determine the output of the
+legacy/reference/original code
+for a given input</p></li>
+<li><p>use that as an oracle for the optimized code.</p></li>
+</ol>
+<p>Knowledge of the algorithms
+and of their numerical properties
+helps with determining
+the most important test cases.</p>
+<p>Using <strong>version control</strong> is also paramount,
+as with any activity related to software development.</p>
+</div>
+</div>
+</section>
+<section id="performance-tuning-workflow">
+<h3>Performance tuning workflow<a class="headerlink" href="#performance-tuning-workflow" title="Link to this heading"></a></h3>
+<p>Once a way to ascertain the correctness of the code
+is available
+(preferably <em>quick</em> and <em>automated</em>),
+performance optimization typically proceeds in an iterative fashion.</p>
+<p>“Scientific” workflow:</p>
+<ol class="arabic simple">
+<li><p>Make a falsifiable hypothesis (why is my code slow?)</p></li>
+<li><p>Get data and analyse it, plan code changes (design experiment)</p></li>
+<li><p>Action: implement changes (perform experiment)</p></li>
+</ol>
+<p>Another, more concrete, view of the same approach:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Phases of the Performance Tuning loop</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Possible problems</p></th>
+<th class="head"><p>Problem mitigation<br />
+(discuss)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><ol class="arabic simple">
+<li><p>Measurement</p></li>
+</ol>
+</td>
+<td><p>What to measure?
+And how?</p></td>
+<td><p>Domain knowledge<br />
+(which use cases are relevant?)<br />
+Computer arch. knowledge<br />
+Performance tool knowledge</p></td>
+</tr>
+<tr class="row-odd"><td><ol class="arabic simple" start="2">
+<li><p>Analysis</p></li>
+</ol>
+</td>
+<td><p>Performance analysis tools
+might produce<br />
+<em>a lot</em> of data.<br />
+What is relevant?</p></td>
+<td><p>Computer arch. knowledge<br />
+(Performance tool knowledge)</p></td>
+</tr>
+<tr class="row-even"><td><p>3 Generation of<br />
+Alternatives</p></td>
+<td><p>How to make hypotheses?</p></td>
+<td><p>Computer arch. knowledge</p></td>
+</tr>
+<tr class="row-odd"><td><ol class="arabic simple" start="4">
+<li><p>Implementation</p></li>
+</ol>
+</td>
+<td><p>Is a code change worth it?<br />
+(complexity vs. performance).<br />
+Redundancy of optimizations</p></td>
+<td><p>Version Control,<br />
+Proper architecture,<br />
+Domain knowledge<br />
+(definition of<br />
+relevant use cases)</p></td>
+</tr>
+</tbody>
+</table>
+<p>It is also important:</p>
+<ul class="simple">
+<li><p>to keep track of the progress
+done during the iterations of the performance optimization loop
+and of the information (or lack thereof)
+that have influenced any decision.
+This can be done, for example,
+with a <a class="reference external" href="https://github.com/RRZE-HPC/ThePerformanceLogbook/blob/master/Template/logbook.md">logbook</a>.</p></li>
+<li><p>to strive for performance reproducibility,
+keeping all <a class="reference internal" href="#document-sources-of-irreproducibility"><span class="std std-doc">sources of performance irreproducibility</span></a>
+under control</p></li>
+</ul>
+</section>
+<section id="porting-to-accelerators-parallelization-and-performance-engineering">
+<h3>Porting to accelerators, Parallelization and performance engineering<a class="headerlink" href="#porting-to-accelerators-parallelization-and-performance-engineering" title="Link to this heading"></a></h3>
+<p>In order for software to run efficiently
+modern HPC clusters,
+typically it needs to be capable of:</p>
+<ul class="simple">
+<li><p>using multiple cores on the same host
+(shared memory)</p></li>
+<li><p>using multiple nodes
+(distributed memory)</p></li>
+<li><p>using accelerators</p></li>
+</ul>
+<p>Some care must be taken
+when porting code
+to take advantage of HPC hardware:</p>
+<ul class="simple">
+<li><p>node-level performance
+should be understood
+and optimized
+before attempting parallelization
+(it is common that software
+that performs poorly at the node level
+seems to scale well
+on multiple nodes).</p></li>
+<li><p>Reaching good performance
+on GPU might require
+changes not only in the algorithms
+but also in the in the way
+data is stored in memory
+(the memory layout).
+In general,
+performance engineering
+is an integral part
+of porting software to another
+hardware architecture.</p></li>
+</ul>
+<p>Moreover: notice that
+the available hardware
+typically changes every few years,
+and that the useful life
+of scientific software is typically longer.
+Maintenance costs can be reduced
+by making use of <em>performance portability frameworks</em>.</p>
+</section>
+</section>
+<span id="document-application-diagnostics"></span><section id="performance-characterization-of-applications">
+<h2>Performance Characterization of applications<a class="headerlink" href="#performance-characterization-of-applications" title="Link to this heading"></a></h2>
+<section id="tools">
+<h3>Tools<a class="headerlink" href="#tools" title="Link to this heading"></a></h3>
+<p>There is a myriad of tools that can be used
+to study the performance of applications.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Taxonomy of performance analysis techniques and tools}</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head stub"><p>Technique</p></th>
+<th class="head"><p>Advantages,<br />
+Disadvantages</p></th>
+<th class="head"><p>Tools (examples)</p></th>
+<th class="head"><p>Recommendation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><th class="stub"><p>total runtime/memory<br />
+measurement</p></th>
+<td><p>very simple,<br />
+little information</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/usr/bin/time</span></code></p></td>
+<td><p>first thing to do</p></td>
+</tr>
+<tr class="row-odd"><th class="stub"><p>Profiling - Sampling</p></th>
+<td><p>low overhead,<br />
+imprecise results</p></td>
+<td><p><a class="reference external" href="https://perfwiki.github.io/main/">Perf</a>,<br />
+gprof,<br />
+Intel VTune,<br />
+Julia’s Profile</p></td>
+<td><p>Best for initial assessment</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p>Profiling<br />
+(Instrumentation)</p></th>
+<td><p>precise results,<br />
+overhead needs<br />
+to be managed</p></td>
+<td><p><a class="reference external" href="https://www.vi-hps.org/">score-p/scalasca</a><br />
+<a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki">LIKWID</a> (marker API)<br />
+Python’s cProfile<br />
+gprof<br />
+GPU profilers</p></td>
+<td><p>choose region/functions<br />
+to observe,<br />
+estimate overhead<br />
+from baseline</p></td>
+</tr>
+<tr class="row-odd"><th class="stub"><p>Simulation</p></th>
+<td><p>Precision,
+deep understanding,<br />
+extremely slow</p></td>
+<td><p>valgrind/callgrind,<br />
+machine code analysis</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><th class="stub"><p>Tracing</p></th>
+<td><p>show task<br />
+dependencies,<br />
+HUGE output</p></td>
+<td><p>Intel ITAC,<br />
+Nvidia NSight,<br />
+BSC Extrae,<br />
+(Score-p)</p></td>
+<td><p>create <em>mini app</em><br />
+with short run time</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<span id="document-notebooks/matmul"></span><section id="walkthrough-dense-matrix-matrix-multiplications-part-1">
+<h2>Walkthrough: Dense Matrix-Matrix multiplications (Part 1)<a class="headerlink" href="#walkthrough-dense-matrix-matrix-multiplications-part-1" title="Link to this heading"></a></h2>
+<p>The Dense Matrix-Matrix multiplication
+has already very well optimized solutions,
+but we can learn something along the way by trying to optimize it,
+starting from the naive version.</p>
+<p>Our code is computing the quantity</p>
+<p><span class="math notranslate nohighlight">\(D = B^T A B\)</span></p>
+<section id="baseline-naive-version-naive-compilation">
+<h3>Baseline: Naive version, naive compilation<a class="headerlink" href="#baseline-naive-version-naive-compilation" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To follow along: commit <a class="reference external" href="https://github.com/mmesiti/perf-engineering-playground/tree/7a83cbd0aa93d8dacec2106f62a6f6516653bfaf">7a83cbd0a</a></p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>7a83cbd0a
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>HEAD is now at 7a83cbd Matmul baseline
+</pre></div>
+</div>
+</div>
+</div>
+<p>Compilation:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-lm
+</pre></div>
+</div>
+</div>
+</div>
+<p>Basic timing:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">time</span><span class="w"> </span>./main
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>real	0m24,341s
+user	0m24,321s
+sys	0m0,018s
+</pre></div>
+</div>
+</div>
+</div>
+<p>The cpu is very busy. What is happening?
+In our code, we have some initialization functions,
+and a pair of matrix multiplications.</p>
+<p>We expect the initialization functions to be negligible.
+Is this the case?</p>
+<p>Let’s have a look with <code class="docutils literal notranslate"><span class="pre">perf</span></code>.
+First of all, we compile with <em>debug symbols on</em>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcc<span class="w"> </span>-g<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-lm
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then we can run our code under <code class="docutils literal notranslate"><span class="pre">perf</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>perf<span class="w"> </span>record<span class="w"> </span>-g<span class="w"> </span>./main
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: Kernel address maps (/proc/{kallsyms,modules}) are restricted,
+check /proc/sys/kernel/kptr_restrict and /proc/sys/kernel/perf_event_paranoid.
+
+Samples in kernel functions may not be resolved if a suitable vmlinux
+file is not found in the buildid cache or in the vmlinux path.
+
+Samples in kernel modules won&#39;t be resolved at all.
+
+If some relocation was applied (e.g. kexec) symbols may be misresolved
+even with a suitable vmlinux or kallsyms file.
+
+Couldn&#39;t record kernel reference relocation symbol
+Symbol resolution may be skewed if relocation was used (e.g. kexec).
+Check /proc/kallsyms permission or run as root.
+[ perf record: Woken up 29 times to write data ]
+[ perf record: Captured and wrote 7,423 MB perf.data (96993 samples) ]
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can have a look at the recorded data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using --stdio and head to stay on the notebook, you don&#39;t have to</span>
+perf<span class="w"> </span>report<span class="w"> </span>-g<span class="w"> </span>--stdio<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n<span class="w"> </span><span class="m">40</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning:
+Kernel address maps (/proc/{kallsyms,modules}) were restricted.
+
+Check /proc/sys/kernel/kptr_restrict before running &#39;perf record&#39;.
+
+As no suitable kallsyms nor vmlinux was found, kernel samples
+can&#39;t be resolved.
+
+Samples in kernel modules can&#39;t be resolved as well.
+
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 96K of event &#39;cycles:P&#39;
+# Event count (approx.): 103878286417
+#
+# Children      Self  Command  Shared Object         Symbol                    
+# ........  ........  .......  ....................  ..........................
+#
+    99.99%     0.00%  main     libc.so.6             [.] __libc_start_call_main
+            |
+            ---__libc_start_call_main
+               main
+               |          
+               |--63.72%--mat_t_mat_mul
+               |          
+                --36.09%--matmat_mul
+
+    99.99%     0.00%  main     main                  [.] main
+            |
+            ---main
+               |          
+               |--63.72%--mat_t_mat_mul
+               |          
+                --36.09%--matmat_mul
+
+    63.72%    63.58%  main     main                  [.] mat_t_mat_mul
+            |          
+             --63.58%--__libc_start_call_main
+                       main
+                       mat_t_mat_mul
+
+    36.09%    36.01%  main     main                  [.] matmat_mul
+            |          
+             --36.01%--__libc_start_call_main
+                       main
+                       matmat_mul
+</pre></div>
+</div>
+</div>
+</div>
+<p>We note that:</p>
+<ol class="arabic simple">
+<li><p>The callgraph is very simple, so from now on we can avoid using <code class="docutils literal notranslate"><span class="pre">-g</span></code> with <code class="docutils literal notranslate"><span class="pre">perf</span></code></p></li>
+<li><p>the function <code class="docutils literal notranslate"><span class="pre">matmat_mul</span></code> (the one that does <span class="math notranslate nohighlight">\(C = AB\)</span>) takes half of the time as the <code class="docutils literal notranslate"><span class="pre">mat_t_mat_mul</span></code> (the one that does <span class="math notranslate nohighlight">\(D = B^T C\)</span>).</p></li>
+</ol>
+<p>What is going wrong? We might have an idea about memory layouts and access patterns.</p>
+</section>
+<section id="investigation-with-the-likwid-marker-api">
+<h3>Investigation with the LIKWID Marker API<a class="headerlink" href="#investigation-with-the-likwid-marker-api" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To follow along: <a class="reference external" href="https://github.com/mmesiti/perf-engineering-playground/tree/a9d5657edad75d4d3a3d952981c98db65843301a">a9d5657ed</a></p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>a9d5657ed
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Previous HEAD position was 7a83cbd Matmul baseline
+HEAD is now at a9d5657 Minimal LIKWID marker instrumentation
+</pre></div>
+</div>
+</div>
+</div>
+<p>We will use LIKWID to carry on the investigation.
+For this, we need to manually instrument the code:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>diff<span class="w"> </span>HEAD~
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">diff --git a/matmul/main.c b/matmul/main.c</span>
+<span class=" -Color -Color-Bold">index 7efd5ce..48cb3eb 100644</span>
+<span class=" -Color -Color-Bold">--- a/matmul/main.c</span>
+<span class=" -Color -Color-Bold">+++ b/matmul/main.c</span>
+<span class=" -Color -Color-Cyan">@@ -1,6 +1,6 @@</span>
+ #include &quot;matmul_v1.c&quot;
+ #include &quot;init.c&quot;
+<span class=" -Color -Color-Red">-</span>
+<span class=" -Color -Color-Green">+#include &lt;likwid-marker.h&gt;</span>
+ 
+ int main(){
+ 
+<span class=" -Color -Color-Cyan">@@ -14,10 +14,20 @@</span> int main(){
+     // We want to compute D = Bt A B
+     // C = A B
+     // D = Bt C
+<span class=" -Color -Color-Green">+</span>
+<span class=" -Color -Color-Green">+    LIKWID_MARKER_INIT;</span>
+<span class=" -Color -Color-Green">+    LIKWID_MARKER_REGISTER(&quot;MM&quot;);</span>
+<span class=" -Color -Color-Green">+    LIKWID_MARKER_REGISTER(&quot;MTM&quot;);</span>
+<span class=" -Color -Color-Green">+</span>
+<span class=" -Color -Color-Green">+    LIKWID_MARKER_START(&quot;MM&quot;);</span>
+     matmat_mul(a,b,c,N);
+<span class=" -Color -Color-Green">+    LIKWID_MARKER_STOP(&quot;MM&quot;);</span>
+<span class=" -Color -Color-Green">+    LIKWID_MARKER_START(&quot;MTM&quot;);</span>
+     mat_t_mat_mul(b,c,d,N);
+<span class=" -Color -Color-Green">+    LIKWID_MARKER_STOP(&quot;MTM&quot;);</span>
+ 
+     free(d);free(c);free(b);free(a);
+<span class=" -Color -Color-Green">+    LIKWID_MARKER_CLOSE;</span>
+     return 0;
+ 
+ }
+</pre></div>
+</div>
+</div>
+</div>
+<p>And then recompile:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gcc<span class="w"> </span>-DLIKWID_PERFMON<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-lm<span class="w"> </span>-llikwid
+</pre></div>
+</div>
+</div>
+</div>
+<p>Once the compilation has succeeded (troubleshooting: see <a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki/TutorialMarkerC">this tutorial</a> if libraries and headers are not found), we can check which performance groups we can investigate with LIKWID:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-perfctr<span class="w"> </span>-a
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Group name	Description
+--------------------------------------------------------------------------------
+   ENERGY	Power and Energy consumption
+ FLOPS_DP	Double Precision MFLOP/s
+     DATA	Load to store ratio
+   DIVIDE	Divide unit information
+ FLOPS_SP	Single Precision MFLOP/s
+   BRANCH	Branch prediction miss rate/ratio
+FLOPS_AVX	Packed AVX MFLOP/s
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since our code uses only <code class="docutils literal notranslate"><span class="pre">floats</span></code>, we expect the <code class="docutils literal notranslate"><span class="pre">FLOPS_SP</span></code> performance group to be interesting:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-perfctr<span class="w"> </span>-m<span class="w"> </span>-C<span class="w"> </span>S0:0<span class="w"> </span>-g<span class="w"> </span>FLOPS_SP<span class="w"> </span>./main
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------------------------------------------------
+CPU name:	11th Gen Intel(R) Core(TM) i5-1145G7 @ 2.60GHz
+CPU type:	Intel Tigerlake processor
+CPU clock:	2.61 GHz
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+Region MM, Group 1: FLOPS_SP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |   9.417304 |
+|     call count    |          1 |
++-------------------+------------+
+
++------------------------------------------+---------+--------------+
+|                   Event                  | Counter |  HWThread 0  |
++------------------------------------------+---------+--------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 104535300000 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  37669540000 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  24342280000 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |            0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |   2985984000 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |            0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |            0 |
++------------------------------------------+---------+--------------+
+
++-------------------------+------------+
+|          Metric         | HWThread 0 |
++-------------------------+------------+
+|   Runtime (RDTSC) [s]   |     9.4173 |
+|   Runtime unhalted [s]  |    14.4266 |
+|       Clock [MHz]       |  4040.6872 |
+|           CPI           |     0.3604 |
+|       SP [MFLOP/s]      |   317.0742 |
+|     AVX SP [MFLOP/s]    |          0 |
+|   AVX512 SP [MFLOP/s]   |          0 |
+|     Packed [MUOPS/s]    |          0 |
+|     Scalar [MUOPS/s]    |   317.0742 |
+| Vectorization ratio [%] |          0 |
++-------------------------+------------+
+
+Region MTM, Group 1: FLOPS_SP
++-------------------+------------+
+|    Region Info    | HWThread 0 |
++-------------------+------------+
+| RDTSC Runtime [s] |  17.361890 |
+|     call count    |          1 |
++-------------------+------------+
+
++------------------------------------------+---------+--------------+
+|                   Event                  | Counter |  HWThread 0  |
++------------------------------------------+---------+--------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 104541300000 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  72267170000 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  44929640000 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |            0 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |   2985984000 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |            0 |
+| FP_ARITH_INST_RETIRED_512B_PACKED_SINGLE |   PMC3  |            0 |
++------------------------------------------+---------+--------------+
+
++-------------------------+------------+
+|          Metric         | HWThread 0 |
++-------------------------+------------+
+|   Runtime (RDTSC) [s]   |    17.3619 |
+|   Runtime unhalted [s]  |    27.6767 |
+|       Clock [MHz]       |  4199.8549 |
+|           CPI           |     0.6913 |
+|       SP [MFLOP/s]      |   171.9850 |
+|     AVX SP [MFLOP/s]    |          0 |
+|   AVX512 SP [MFLOP/s]   |          0 |
+|     Packed [MUOPS/s]    |          0 |
+|     Scalar [MUOPS/s]    |   171.9850 |
+| Vectorization ratio [%] |          0 |
++-------------------------+------------+
+</pre></div>
+</div>
+</div>
+</div>
+<p>An observation: the two functions do the same amount of operations, but for the matrix-time-matrix multiplication we have a ~70% better performance than for the matrix-transpose-time-matrix multiplication.</p>
+<p>This already suggests that at least one of the two function could be written in a way that is far from optimal.</p>
+<p>Before we go further, we should ask ourselves:</p>
+<ol class="arabic simple">
+<li><p>How far are we from the maximum performance?</p></li>
+<li><p>How much more performance would we be able to reach?</p></li>
+</ol>
+</section>
+</section>
+<span id="document-computer-architecture"></span><section id="elements-of-computer-architecture-and-their-effects">
+<h2>Elements of Computer Architecture and their effects<a class="headerlink" href="#elements-of-computer-architecture-and-their-effects" title="Link to this heading"></a></h2>
+<p>Compute balance: Raw compute power is cheap, memory bandwidth is not.
+This is why most HPC workloads are memory bound.</p>
+<section id="tools-for-system-investigation">
+<h3>Tools for system investigation<a class="headerlink" href="#tools-for-system-investigation" title="Link to this heading"></a></h3>
+<p>To understand what are the limits of the system
+we are working on,
+we can use some predefined benchmarks to assess the performance of the system.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki/likwid-topology">likwid-topology</a></p></li>
+<li><p><a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki/Likwid-Bench">likwid-bench</a>:
+suite of tunable micro benchmarks for CPU and main memory</p></li>
+<li><p><a class="reference external" href="https://github.com/axboe/fio">fio</a> for IO benchmarks and tests</p></li>
+<li><p><a class="reference external" href="https://mvapich.cse.ohio-state.edu/benchmarks/">OSU Micro Benchmarks</a>: suite of micro benchmarks for different types of MPI communication</p></li>
+</ul>
+</section>
+<section id="trade-offs">
+<h3>Trade-offs<a class="headerlink" href="#trade-offs" title="Link to this heading"></a></h3>
+<div class="admonition-demo-hardware-exploration-with-likwid exercise important admonition" id="exercise-0">
+<p class="admonition-title">Demo: Hardware exploration with LIKWID</p>
+<p>What is the structure of the CPU?
+<a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki/likwid-topology"><code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code></a>
+can help us.
+We can use <code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code> to explore the limits of our hardware.</p>
+<p>For an exploration, see <a class="reference internal" href="#document-notebooks/likwid"><span class="std std-doc">this notebook</span></a></p>
+</div>
+<ul class="simple">
+<li><p>Memory: Size vs Speed and latency.</p></li>
+</ul>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Characteristics of memory systems (Order of magnitude, from various sources)</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>System</p></th>
+<th class="head"><p>Bandwidth</p></th>
+<th class="head"><p>Latency</p></th>
+<th class="head"><p>Size</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Registers</p></td>
+<td><p>*</p></td>
+<td><p>&lt; 1cy</p></td>
+<td><p>1KB</p></td>
+<td><p>per core</p></td>
+</tr>
+<tr class="row-odd"><td><p>L1 cache</p></td>
+<td><p>&lt;100GB/s</p></td>
+<td><p>~1ns</p></td>
+<td><p>32KB</p></td>
+<td><p>per core</p></td>
+</tr>
+<tr class="row-even"><td><p>L2 cache</p></td>
+<td><p>&lt;100GB/s</p></td>
+<td><p>~4ns</p></td>
+<td><p>512KB</p></td>
+<td><p>per core</p></td>
+</tr>
+<tr class="row-odd"><td><p>L3 cache</p></td>
+<td><p>1.25 TB/s</p></td>
+<td><p>~16ns</p></td>
+<td><p>50MB</p></td>
+<td><p>per package, shared</p></td>
+</tr>
+<tr class="row-even"><td><p>HBM</p></td>
+<td><p>2-8TB/s</p></td>
+<td><p></p></td>
+<td><p>64GB</p></td>
+<td><p>per package</p></td>
+</tr>
+<tr class="row-odd"><td><p>Main Memory</p></td>
+<td><p>50-400GB/s</p></td>
+<td><p>~100ns(*)</p></td>
+<td><p>200GB</p></td>
+<td><p>per node</p></td>
+</tr>
+<tr class="row-even"><td><p>Network (IB)</p></td>
+<td><p>&lt;100GB/s</p></td>
+<td><p></p></td>
+<td><p>-</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Local SDD</p></td>
+<td><p>~1GB/s</p></td>
+<td><p></p></td>
+<td><p>~1TB</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>Global Filesystem</p></td>
+<td><p>~50GB/s</p></td>
+<td><p></p></td>
+<td><p>~PBs</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Tape</p></td>
+<td><p></p></td>
+<td><p>~1min</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>With <code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code> and <code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code> we can get
+more precise values or better estimates.</p>
+<p><strong>Challenge:</strong>
+What if our data structures do not fit in memory/storage system X?</p>
+<ul class="simple">
+<li><p>Memory granularity:</p>
+<ul>
+<li><p>Registers (there’s only a handful of them unfortunately)</p></li>
+<li><p>Cache line (64B on most CPUs, 64B-128B on GPUs)</p></li>
+<li><p>Memory Pages: &gt;4MB</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="parallelism-in-the-core-vectorization-and-superscalarity">
+<h3>Parallelism in the core: Vectorization and superscalarity<a class="headerlink" href="#parallelism-in-the-core-vectorization-and-superscalarity" title="Link to this heading"></a></h3>
+<p>CPUs can do more things at the same time
+in two main ways:</p>
+<ul class="simple">
+<li><p>Vectorization (SIMD, Single Instruction Multiple Data):</p></li>
+<li><p>Superscalarity and pipelining</p></li>
+</ul>
+<section id="vector-operations">
+<h4>Vector operations<a class="headerlink" href="#vector-operations" title="Link to this heading"></a></h4>
+<p>Note: Vector loads/store have typically higher bandwidth,
+especially when fetching data from L1
+(verify with <code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code>).</p>
+</section>
+<section id="superscalarity">
+<h4>Superscalarity<a class="headerlink" href="#superscalarity" title="Link to this heading"></a></h4>
+</section>
+</section>
+<section id="caches">
+<h3>Caches<a class="headerlink" href="#caches" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Data is moved between cache levels
+and between caches and the RAM
+only in “chunks” of 64Bytes
+(the size of a <em>cache line</em>).</p>
+<p>This means that if we use only a single value
+out of a 64B cache line,
+we will potentially trash a lot of data.</p>
+</li>
+<li><p>Cache is typically not fully associative:
+not all 64B chunks of the main memory
+can be “mirrored” in all cache lines,
+but typically each of them can only fit
+in a specific “cache line group”.</p>
+<p>Some access patterns can lead to poor cache utilization
+due to <strong>cache associativity</strong>.</p>
+</li>
+<li><p>Cache levels can also be inclusive, esclusive or neither
+(<a class="reference external" href="https://en.wikipedia.org/wiki/Cache_inclusion_policy">cache inclusion policy</a>).</p></li>
+</ul>
+<div class="admonition-false-sharing exercise important admonition" id="exercise-1">
+<p class="admonition-title">False sharing</p>
+<p>What is the best way to split
+embarrassingly parallel work on an array
+by N threads?</p>
+<ol class="arabic simple">
+<li><p>Thread 0 works on element 0, Thread 1 works on element 1
+and in general Thread <code class="docutils literal notranslate"><span class="pre">i</span></code> works on elements <code class="docutils literal notranslate"><span class="pre">k*nthreads+i</span></code>;</p></li>
+<li><p>Array is split in <code class="docutils literal notranslate"><span class="pre">nthreads</span></code> contiguous chunks,
+every thread works on a chunk.</p></li>
+</ol>
+<div class="admonition-solution solution important dropdown admonition" id="solution-0">
+<p class="admonition-title">Solution</p>
+<p>When working with multiple threads,
+be aware that different threads working on different cores
+accessing the same data might “fight”
+over a single cache line,
+as the hardware is forced to give a consistent view
+of the data to both threads.
+In that situation, called <em>false sharing</em>,
+the workload becomes latency-bound.
+For this reason, typically the best approach is <strong>2</strong>.</p>
+<p>Note that this is exactly the opposite
+to what is done when writing GPU kernels,
+where each thread in a thread block
+works typically on data that is close
+to the data on which the other members
+of the thread bloc operate:
+we are operating at another granularity level.</p>
+</div>
+</div>
+</section>
+<section id="main-memory">
+<h3>Main memory<a class="headerlink" href="#main-memory" title="Link to this heading"></a></h3>
+<p>Rows and columns: memory is usually accessed in rows and columns.
+If different data is read from the same row repeatedly,
+then access is typically noticeably faster.
+This is another reason why sequential access
+can be much faster than random access.</p>
+<section id="non-uniform-memory-access">
+<h4>Non-Uniform-Memory-Access<a class="headerlink" href="#non-uniform-memory-access" title="Link to this heading"></a></h4>
+<p>On modern and powerful compute nodes
+it is very common nowadays the situation
+where not all compute units can access
+the main memory in an <em>uniform</em> way.</p>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Bandwidth and Latency</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Situation</p></th>
+<th class="head"><p>Bandwidth</p></th>
+<th class="head"><p>Latency</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Same domain</p></td>
+<td><p>165GB/s</p></td>
+<td><p>90 ns</p></td>
+</tr>
+<tr class="row-odd"><td><p>Different domain</p></td>
+<td><p>55GB/s</p></td>
+<td><p>140 ns</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="simple-performance-modelling-the-roofline-model">
+<h3>Simple performance modelling: the roofline model<a class="headerlink" href="#simple-performance-modelling-the-roofline-model" title="Link to this heading"></a></h3>
+</section>
+<section id="recommendations">
+<h3>Recommendations<a class="headerlink" href="#recommendations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Ensuring Data reuse is paramount</strong>:</p>
+<ul>
+<li><p>use as much data as possible out of every cache line
+before it is evicted
+(split “hot” and “cold” data
+between different structures/arrays)</p></li>
+<li><p>reuse as much as possible data
+that has been read or written
+shortly before</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="references">
+<h3>References<a class="headerlink" href="#references" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.infinibandta.org/ibta-specification/">Infiniband max Bandwidth</a></p></li>
+<li><p><a class="reference external" href="https://en.algorithmica.org/hpc/cpu-cache/associativity/">Algorithmica: Algorithms for Modern Hardware</a></p></li>
+<li><p><a class="reference external" href="https://people.freebsd.org/~lstewart/articles/cpumemory.pdf">What every programmer should know about memory</a></p></li>
+</ul>
+</section>
+</section>
+<span id="document-notebooks/likwid"></span><section id="a-brief-likwid-demo-topology-and-microbenchmarks">
+<h2>A brief LIKWID demo: topology and microbenchmarks<a class="headerlink" href="#a-brief-likwid-demo-topology-and-microbenchmarks" title="Link to this heading"></a></h2>
+<p>LIKWID is a suite of tools for performance diagnostics.
+In this short demo we will use two tools
+to inspect the property of the hardware,
+<code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code> and <code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code></p>
+<section id="inspect-node-structure-with-likwid-topology">
+<h3>Inspect node structure with <code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code><a class="headerlink" href="#inspect-node-structure-with-likwid-topology" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code> aggregates information coming from different sources
+and reports on the topology of the CPU, its caches and NUMA domains
+(NVidia GPU information can be obtained with -G).</p>
+<p>Basic information can be obtained with:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-topology<span class="w"> </span>--clock<span class="w"> </span>--caches
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--------------------------------------------------------------------------------
+CPU name:	11th Gen Intel(R) Core(TM) i5-1145G7 @ 2.60GHz
+CPU type:	Intel Tigerlake processor
+CPU stepping:	1
+CPU clock:	2.61 GHz
+********************************************************************************
+Hardware Thread Topology
+********************************************************************************
+Sockets:		1
+CPU dies:		1
+Cores per socket:	4
+Threads per core:	2
+--------------------------------------------------------------------------------
+HWThread        Thread        Core        Die        Socket        Available
+0               0             0           0          0             *                
+1               0             1           0          0             *                
+2               0             2           0          0             *                
+3               0             3           0          0             *                
+4               1             0           0          0             *                
+5               1             1           0          0             *                
+6               1             2           0          0             *                
+7               1             3           0          0             *                
+--------------------------------------------------------------------------------
+Socket 0:		( 0 4 1 5 2 6 3 7 )
+--------------------------------------------------------------------------------
+********************************************************************************
+Cache Topology
+********************************************************************************
+Level:			1
+Size:			48 kB
+Type:			Data cache
+Associativity:		12
+Number of sets:		64
+Cache line size:	64
+Cache type:		Non Inclusive
+Shared by threads:	2
+Cache groups:		( 0 4 ) ( 1 5 ) ( 2 6 ) ( 3 7 )
+--------------------------------------------------------------------------------
+Level:			2
+Size:			1.25 MB
+Type:			Unified cache
+Associativity:		20
+Number of sets:		1024
+Cache line size:	64
+Cache type:		Non Inclusive
+Shared by threads:	2
+Cache groups:		( 0 4 ) ( 1 5 ) ( 2 6 ) ( 3 7 )
+--------------------------------------------------------------------------------
+Level:			3
+Size:			8 MB
+Type:			Unified cache
+Associativity:		8
+Number of sets:		16384
+Cache line size:	64
+Cache type:		Non Inclusive
+Shared by threads:	8
+Cache groups:		( 0 4 1 5 2 6 3 7 )
+--------------------------------------------------------------------------------
+********************************************************************************
+NUMA Topology
+********************************************************************************
+NUMA domains:		1
+--------------------------------------------------------------------------------
+Domain:			0
+Processors:		( 0 4 1 5 2 6 3 7 )
+Distances:		10
+Free memory:		1738.41 MB
+Total memory:		15593.6 MB
+--------------------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p>Notably, we get:</p>
+<ul class="simple">
+<li><p>basic cpu and threading information (thread to core correspondence)</p></li>
+<li><p><strong>cache information</strong>: in this case, we see that L1 and L2 are local to a core
+(which corresponds to a pair of threads),
+while L3 cache is common to all cores and threads.
+We also get the sizes of the caches (which we should be able to compare with some experiments, later)</p></li>
+<li><p><strong>NUMA topology</strong> information: in this case, there is only one domain to which all processors belong.</p></li>
+</ul>
+</section>
+<section id="maximum-performance-and-bandwidth-estimates-the-roofline-model">
+<h3>Maximum performance and bandwidth estimates: the Roofline model<a class="headerlink" href="#maximum-performance-and-bandwidth-estimates-the-roofline-model" title="Link to this heading"></a></h3>
+<p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Roofline_model">Roofline Model</a>
+is a performance model that assumes
+that there are 2 main performance bottlenecks:</p>
+<ul class="simple">
+<li><p>peak floating point performance</p></li>
+<li><p>the memory bandwidth.</p></li>
+</ul>
+<p>In this model,
+the relevant bottleneck for the kernel (typically, a loop) being investigated
+is determined by its <strong>arithmetic intensity</strong> (also <strong>operational intensity</strong>),
+that is the ratio between how many FP operations are done
+and the <em>memory traffic</em> in byte,
+that is how many bytes have to be moved
+from/to a particular memory system (cache level or RAM).</p>
+<p><img alt="Roofline Model (Wikipedia)" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Example_of_a_Roofline_model.svg/1920px-Example_of_a_Roofline_model.svg.png" /> By <a href="//commons.wikimedia.org/w/index.php?title=User:Giu.natale&amp;action=edit&amp;redlink=1" class="new" title="User:Giu.natale (page does not exist)">Giu.natale</a> - <span class="int-own-work" lang="en">Own work</span>, <a href="https://creativecommons.org/licenses/by-sa/4.0" title="Creative Commons Attribution-Share Alike 4.0">CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=49641314">Link</a></p>
+<p>The maximum possible FP performance for a kernel is given by that “roofline”
+(called so probably because it reminds of a roof):</p>
+<ul class="simple">
+<li><p>kernels which require few operations per byte
+(low arithmetic intensity, on the left side of the plot above)
+will be ultimately <strong>memory bound</strong></p></li>
+<li><p>kernels which perform enough operations per byte
+(right end of the plot above)
+will be <strong>compute bound</strong>, that is able to run at the maximum FP performance of the machine.</p></li>
+</ul>
+<p>Most codes in use today are typically <strong>memory bound</strong>.</p>
+<p>Notice that if our code is <em>latency limited</em>
+its performance will stay way below the roofline.</p>
+<section id="likwid-bench">
+<h4><code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code><a class="headerlink" href="#likwid-bench" title="Link to this heading"></a></h4>
+<p>LIKWID gives us a way to determine the characteristics of our machine
+using <code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code>, a suite of microkernel benchmarks.</p>
+<p>In order to use <code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code> we need to specify, at least:</p>
+<ul class="simple">
+<li><p>The “thread domain”, that is on which set of hardware threads the benchmarks is going to run.<br />
+To get which thread domains are available, we can get the <code class="docutils literal notranslate"><span class="pre">-p</span></code> option:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-p
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of Domains 5
+Domain 0:
+	Tag N: 0 4 1 5 2 6 3 7
+Domain 1:
+	Tag S0: 0 4 1 5 2 6 3 7
+Domain 2:
+	Tag D0: 0 4 1 5 2 6 3 7
+Domain 3:
+	Tag C0: 0 4 1 5 2 6 3 7
+Domain 4:
+	Tag M0: 0 4 1 5 2 6 3 7
+</pre></div>
+</div>
+</div>
+</div>
+<p>On a more complicated machine than my laptop we typically get a <code class="docutils literal notranslate"><span class="pre">N</span></code> domain for the whole node, and one per socket or NUMA domain, and one per shared cache.</p>
+<ul class="simple">
+<li><p>The working set size, that is how big the dataset for the benchmark is going to be.<br />
+This determines mostly <em>which cache levels will be involved</em>: bigger dataset will need larger and slower caches.<br />
+By tuning the working set size and comparing it with the cache sizes we get from <code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code>
+we can get an idea the properties of the different cache levels.</p></li>
+</ul>
+<ul class="simple">
+<li><p>The benchmark type we want to run. A (long) list of the readily available benchmarks (for the architecture of the machine we are running on) can be obtained with <code class="docutils literal notranslate"><span class="pre">likwid-bench</span> <span class="pre">-a</span></code>. To understand the “maximum” performance and bandwidth of the machine, we are interested in the <code class="docutils literal notranslate"><span class="pre">peakflops_*</span></code> and <code class="docutils literal notranslate"><span class="pre">load_*</span></code> microkernels:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-a<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;peakflops_\|load_&#39;</span><span class="w">   </span><span class="c1"># using Grep to limit output for readability</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Red">load_</span>avx - Double-precision load, optimized for AVX
+<span class=" -Color -Color-Bold -Color-Bold-Red">load_</span>avx512 - Double-precision load, optimized for AVX-512
+<span class=" -Color -Color-Bold -Color-Bold-Red">load_</span>mem - Double-precision load, using non-temporal loads
+<span class=" -Color -Color-Bold -Color-Bold-Red">load_</span>sse - Double-precision load, optimized for SSE
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>avx - Double-precision multiplications and additions with a single load, optimized for AVX
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>avx512 - Double-precision multiplications and additions with a single load, optimized for AVX-512
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>avx512_fma - Double-precision multiplications and additions with a single load, optimized for AVX-512 FMAs
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>avx_fma - Double-precision multiplications and additions with a single load, optimized for AVX FMAs
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>sp - Single-precision multiplications and additions with a single load, only scalar operations
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>sp_avx - Single-precision multiplications and additions with a single load, optimized for AVX
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>sp_avx512 - Single-precision multiplications and additions with a single load, optimized for AVX-512
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>sp_avx512_fma - Single-precision multiplications and additions with a single load, optimized for AVX-512 FMAs
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>sp_avx_fma - Single-precision multiplications and additions with a single load, optimized for AVX FMAs
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>sp_sse - Single-precision multiplications and additions with a single load, optimised for SSE
+<span class=" -Color -Color-Bold -Color-Bold-Red">peakflops_</span>sse - Double-precision multiplications and additions with a single load, optimised for SSE
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="determining-the-maximum-performance">
+<h4>Determining the maximum performance<a class="headerlink" href="#determining-the-maximum-performance" title="Link to this heading"></a></h4>
+<p>The benchmarks named <code class="docutils literal notranslate"><span class="pre">peakflops_*</span></code> can give us an estimate of the maximum FLOPs performance of our machine.<br />
+In order to run these benchmarks, we choose a small dataset that is going to fit in the L1 CPU cache
+(otherwise the performance might be limited by memory bandwidth and not by the actual FP peak performance),
+and choose the whole machine as thread domain (<code class="docutils literal notranslate"><span class="pre">N</span></code>).
+As shown before by <code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code>, the Total L1 cache for my CPU is $4*48$KB, so I will choose 128KB as the size of the working set.</p>
+<p>A few comments:</p>
+<ul class="simple">
+<li><p>By not specifying a number of threads, <code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code> will use all the hardware threads in the workgroup by default (here, 8)</p></li>
+<li><p>We are using all 4 cores on my machine</p></li>
+</ul>
+<ul class="simple">
+<li><p>maximum performance for <em>scalar</em>, double-precision operations:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>peakflops<span class="w"> </span>-W<span class="w"> </span>N:128KB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MFlops/s&#39;</span><span class="w">   </span><span class="c1"># Using grep here to focus only on the most relevant output</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MFlops/s</span>:		30087.87
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>maximum performance for <em>vector</em> (256-bit), double-precision operations:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>peakflops_avx<span class="w"> </span>-W<span class="w"> </span>N:128KB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MFlops/s&#39;</span><span class="w">   </span><span class="c1"># Using grep here to focus only on the most relevant output</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MFlops/s</span>:		117079.56
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>maximum performance for vector (256bit), double precision operations, which <em>fused multiply-add</em> operations:</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>peakflops_avx_fma<span class="w"> </span>-W<span class="w"> </span>N:128KB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MFlops/s&#39;</span><span class="w">   </span><span class="c1"># Using grep here to focus only on the most relevant output</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MFlops/s</span>:		232018.68
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now, comparing with the corresponding single precision operations:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>peakflops_sp<span class="w"> </span>-W<span class="w"> </span>N:128KB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MFlops/s&#39;</span><span class="w">   </span><span class="c1"># scalar</span>
+likwid-bench<span class="w"> </span>-t<span class="w"> </span>peakflops_sp_avx<span class="w"> </span>-W<span class="w"> </span>N:128KB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MFlops/s&#39;</span><span class="w">   </span><span class="c1"># vector</span>
+likwid-bench<span class="w"> </span>-t<span class="w"> </span>peakflops_sp_avx_fma<span class="w"> </span>-W<span class="w"> </span>N:128KB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MFlops/s&#39;</span><span class="w">   </span><span class="c1"># vector + FMA</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MFlops/s</span>:		30032.48
+Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MFlops/s</span>:		210624.63
+Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MFlops/s</span>:		373403.05
+</pre></div>
+</div>
+</div>
+</div>
+<p>A few comments:</p>
+<ul class="simple">
+<li><p>Using vector operations (256b) lead ~4 times more performance than scalar ones (for double precision, 8 for single precision)</p></li>
+<li><p>The ‘peak value’ depends on the kind of operation.</p></li>
+</ul>
+</section>
+<section id="determining-the-maximum-bandwidth">
+<h4>Determining the maximum bandwidth<a class="headerlink" href="#determining-the-maximum-bandwidth" title="Link to this heading"></a></h4>
+<p>We can use now the <code class="docutils literal notranslate"><span class="pre">load_*</span></code> benchmarks to find out the memory bandwidth.
+Depending on the size of the working set, we can also evaluate the bandwidth for each cache level.</p>
+<p>With a working set of 2GB we will for sure hit the RAM:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>load<span class="w"> </span>-W<span class="w"> </span>N:2GB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+likwid-bench<span class="w"> </span>-t<span class="w"> </span>load_avx<span class="w"> </span>-W<span class="w"> </span>N:2GB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		43969.41
+Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		43688.51
+</pre></div>
+</div>
+</div>
+</div>
+<p>With a working set smaller than the L3 cache, we should hit mostly the L3 cache,
+and thus our bandwidth should be quite higher:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>load<span class="w"> </span>-W<span class="w"> </span>N:6.4MB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+likwid-bench<span class="w"> </span>-t<span class="w"> </span>load_avx<span class="w"> </span>-W<span class="w"> </span>N:6.4MB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		114149.95
+Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		190416.17
+</pre></div>
+</div>
+</div>
+</div>
+<p>If we want to measure the bandwidth of the L2 cache, we can use a working set that is smaller than the total L2 cache, which is $4*1.25$MB:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>load<span class="w"> </span>-W<span class="w"> </span>N:4MB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+likwid-bench<span class="w"> </span>-t<span class="w"> </span>load_avx<span class="w"> </span>-W<span class="w"> </span>N:4MB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		125898.96
+Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		317482.83
+</pre></div>
+</div>
+</div>
+</div>
+<p>Fitting now in the L1 cache:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>load<span class="w"> </span>-W<span class="w"> </span>N:168KB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		178798.50
+</pre></div>
+</div>
+</div>
+</div>
+<p>From the L1 cache we should also see a <em>huge</em> difference when using vector load instructions:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>load_avx<span class="w"> </span>-W<span class="w"> </span>N:168KB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		729787.97
+</pre></div>
+</div>
+</div>
+</div>
+<p>What about stores?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>store<span class="w"> </span>-W<span class="w"> </span>N:2GB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		15096.93
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="shortcut-bypassing-the-cache-with-non-temporal-stores">
+<h4>Shortcut: Bypassing the cache with non-temporal stores<a class="headerlink" href="#shortcut-bypassing-the-cache-with-non-temporal-stores" title="Link to this heading"></a></h4>
+<p>If some data must be written to a memory location
+that we know will not be accessed again in the near future
+(that means, it does not make sense to cache it),
+we can use <em>non-temporal stores</em>, which are typically faster.
+The benchmark <code class="docutils literal notranslate"><span class="pre">store_mem</span></code> uses non-temporal stores:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-t<span class="w"> </span>store_mem<span class="w"> </span>-W<span class="w"> </span>N:2GB<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;MByte/s&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Running without Marker API. Activate Marker API with -m on commandline.
+<span class=" -Color -Color-Bold -Color-Bold-Red">MByte/s</span>:		37493.32
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="appendix">
+<h3>Appendix<a class="headerlink" href="#appendix" title="Link to this heading"></a></h3>
+<section id="more-about-likwid-topology">
+<h4>More about <code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code><a class="headerlink" href="#more-about-likwid-topology" title="Link to this heading"></a></h4>
+<p>As usual, to get information about <code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code>
+we can use the <code class="docutils literal notranslate"><span class="pre">-h</span></code> option:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-topology<span class="w"> </span>-h
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>likwid-topology -- Version 5.4.1 (commit: 0123456789)
+A tool to print the thread and cache topology on CPUs and GPUs.
+
+Options:
+-h, --help		 Help message
+-v, --version		 Version information
+-V, --verbose &lt;level&gt;	 Set verbosity
+-c, --caches		 List cache information
+-C, --clock		 Measure processor clock
+-G, --gpus		 List GPU information
+-O			 CSV output
+-o, --output &lt;file&gt;	 Store output to file. (Optional: Apply text filter)
+-g			 Graphical output
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="more-about-likwid-bench">
+<h4>More about <code class="docutils literal notranslate"><span class="pre">likwid-bench</span></code><a class="headerlink" href="#more-about-likwid-bench" title="Link to this heading"></a></h4>
+<p>We can get more information with the <code class="docutils literal notranslate"><span class="pre">-h</span></code> option:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>likwid-bench<span class="w"> </span>-h
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Threaded Memory Hierarchy Benchmark -- Version 5.4.1 
+
+
+Supported Options:
+-h/--help		 Help message
+-v/--version		 Version
+-a/--all		 List available benchmarks 
+-d/--delim		 Delimiter used for physical hwthread list (default ,) 
+-p/--printdomains	 List available thread domains
+				 or the physical ids of the hwthreads selected by the -c expression 
+-s/--runtime &lt;TIME&gt;	 Seconds to run the test minimally (default 1)
+				 If resulting iteration count is below 10, it is normalized to 10.
+-i/--iters &lt;ITERS&gt;	 Specify the number of iterations per thread manually. 
+-l/--list &lt;TEST&gt;	 list properties of benchmark 
+-t/--test &lt;TEST&gt;	 type of test 
+-w/--workgroup		 &lt;thread_domain&gt;:&lt;size&gt;[:&lt;num_threads&gt;[:&lt;chunk size&gt;:&lt;stride&gt;]-&lt;streamId&gt;:&lt;domain_id&gt;[:&lt;offset&gt;]
+-W/--Workgroup		 &lt;thread_domain&gt;:&lt;size&gt;[:&lt;num_threads&gt;[:&lt;chunk size&gt;:&lt;stride&gt;]]
+				 &lt;size&gt; in kB, MB or GB (mandatory)
+For dynamically loaded benchmarks
+-f/--tempdir &lt;PATH&gt;	 Specify a folder for the temporary files. default: /tmp
+-o/--asmout &lt;FILE&gt;	 Save generated assembly to file
+
+Difference between -w and -W :
+-w allocates the streams in the thread_domain with one thread and support placement of streams
+-W allocates the streams chunk-wise by each thread in the thread_domain
+
+Usage: 
+# Run the store benchmark on all CPUs of the system with a vector size of 1 GB
+likwid-bench -t store -w S0:1GB
+# Run the copy benchmark on one CPU at CPU socket 0 with a vector size of 100kB
+likwid-bench -t copy -w S0:100kB:1
+# Run the copy benchmark on one CPU at CPU socket 0 with a vector size of 100MB but place one stream on CPU socket 1
+likwid-bench -t copy -w S0:100MB:1-0:S0,1:S1
+</pre></div>
+</div>
+</div>
+</div>
+<p>See also the official <a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki/Likwid-Bench">wiki page</a> for less terse explanations.</p>
+</section>
+</section>
+<section id="other-tools">
+<h3>Other tools<a class="headerlink" href="#other-tools" title="Link to this heading"></a></h3>
+<p>A “simple” way to measure latency is also using “pointer chasing” (see <a class="reference internal" href="#document-pointer-chasing-and-latency"><span class="std std-doc">this optional episode</span></a> for an example).</p>
+<p>The <a class="reference external" href="https://www.intel.com/content/www/us/en/download/736633/intel-memory-latency-checker-intel-mlc.html">Intel mlc (Memory Latency Checker)</a> can not only measure latencies, but also determine the latency-bandwidth curve (when the bandwidth is saturated, then latency tends to increase too).</p>
+</section>
+<section id="credits">
+<h3>Credits<a class="headerlink" href="#credits" title="Link to this heading"></a></h3>
+<p>Apart from personal experience, the content of this notebook is inspired by official <a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki">LIKWID wiki</a>, and in particular the <a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki/Tutorial%3A-Empirical-Roofline-Model">tutorial on the empirical roofline model</a>.</p>
+</section>
+</section>
+<span id="document-compilers"></span><section id="what-a-compiler-and-the-hardware-can-do-for-you">
+<h2>What a compiler (and the hardware) can do for you<a class="headerlink" href="#what-a-compiler-and-the-hardware-can-do-for-you" title="Link to this heading"></a></h2>
+<section id="compiler-as-magicians">
+<h3>Compiler as magicians<a class="headerlink" href="#compiler-as-magicians" title="Link to this heading"></a></h3>
+<p>With the right flags, compilers can do automatically:</p>
+<ul class="simple">
+<li><p>common subexpression elimination</p></li>
+<li><p>Loop unrolling</p></li>
+<li><p>Loop reordering</p></li>
+<li><p>Auto vectorization</p></li>
+<li><p>Some compilers (i.e., Intel) also
+can auto-parallelize loops using shared-memory parallelization.</p></li>
+</ul>
+<p>Note: Some advanced optimization options
+can actually change subtly
+the actual behaviour of the code.</p>
+<section id="common-optimizations-enabled-via-flags">
+<h4>Common optimizations enabled via flags<a class="headerlink" href="#common-optimizations-enabled-via-flags" title="Link to this heading"></a></h4>
+<ul>
+<li><p>Generation of machine instructions
+for a specific architecture.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-Olevel</span></code>: Different optimization levels “meta” options,
+typically corresponding to a set of flags
+for specific optimizations.
+Higher levels typically include all the optimization flags
+included lower levels, plus more.</p>
+<p>Higher optimization levels
+tend to:</p>
+<ul class="simple">
+<li><p>offer higher performance binaries
+(even by orders of magnitude),</p></li>
+<li><p>increase the compilation times.</p></li>
+<li><p>remove checks and debugging information</p></li>
+</ul>
+<p>For this reason, consider:</p>
+<ul class="simple">
+<li><p>For testing during your usual development loop, use <code class="docutils literal notranslate"><span class="pre">-O0</span></code></p></li>
+<li><p>For debugging, use <code class="docutils literal notranslate"><span class="pre">-Og</span></code> (if available)</p></li>
+<li><p>For performance: use <code class="docutils literal notranslate"><span class="pre">-O2</span></code>/<code class="docutils literal notranslate"><span class="pre">-O3</span></code> or <code class="docutils literal notranslate"><span class="pre">-Ofast</span></code></p></li>
+</ul>
+<div class="admonition-compilation-options-rtfm exercise important admonition" id="exercise-0">
+<p class="admonition-title">Compilation options: RTFM</p>
+<p>Familiarize yourself with the manual of the GNU
+and Intel compiler,
+with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>man<span class="w"> </span>gcc
+</pre></div>
+</div>
+<p>for the GNU C compiler, and</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>man<span class="w"> </span>icx
+</pre></div>
+</div>
+<p>for the Intel C compiler.</p>
+<p>If you are doing this on a HPC system,
+you might need to load the appropriate modules
+to make the manpages for the compilers available.</p>
+<p>What are the default optimization options in both cases?</p>
+</div>
+<p>Note: different compilers have
+different default values of <code class="docutils literal notranslate"><span class="pre">-Olevel</span></code>,
+some defaulting to <code class="docutils literal notranslate"><span class="pre">-O0</span></code>, some to <code class="docutils literal notranslate"><span class="pre">-O2</span></code>.</p>
+</li>
+<li><p>“fast math” optimization options: these allow the compiler
+to use versions of the math functions
+that do not have to comply to standard, and thus could be faster.</p></li>
+</ul>
+</section>
+<section id="how-to-help-a-compiler">
+<h4>How to help a compiler<a class="headerlink" href="#how-to-help-a-compiler" title="Link to this heading"></a></h4>
+<p>There are some modifications
+that might help a compiler
+produce better assembly code.</p>
+<ul class="simple">
+<li><p>Avoid pointer hopping and indirect addressing
+(this requirement, in higher level languages,
+also translates in avoiding dynamic typing
+in some situations)</p></li>
+<li><p>Loop unrolling
+(this can be done automatically by modern compilers)</p></li>
+</ul>
+</section>
+<section id="automatic-vectorization">
+<h4>Automatic vectorization<a class="headerlink" href="#automatic-vectorization" title="Link to this heading"></a></h4>
+<p>Vectorized instructions represent
+one of the most important ways to get high performance
+from modern CPUs.</p>
+<ul class="simple">
+<li><p>Use an appropriate memory layout.
+Going from an <em>Array of Structures</em> (AoS)
+to a <em>Structure of Array</em> (SoA) layout
+might help.
+Reads and writes must be done in 128/256/512 bit chunks.</p></li>
+<li><p>Avoid complex logic in loops that could be vectorized,
+in particular:</p>
+<ul>
+<li><p>conditionals (e.g., <code class="docutils literal notranslate"><span class="pre">if</span></code> statements)</p></li>
+<li><p>calls to non-trivial functions that cannot be inlined.</p></li>
+</ul>
+</li>
+</ul>
+<p>To verify the result of the vectorization,
+there are a few options</p>
+<ol class="arabic simple">
+<li><p>Get the assembly output either by</p>
+<ul class="simple">
+<li><p>running <code class="docutils literal notranslate"><span class="pre">objdump</span> <span class="pre">-d</span></code> on the object file produced (can work also with the final linked binary, but might be way larger)</p></li>
+<li><p>compile the source file with the <code class="docutils literal notranslate"><span class="pre">-s</span></code> option</p></li>
+</ul>
+</li>
+<li><p>Get the information from the compiler in the form of a vectorization report (<code class="docutils literal notranslate"><span class="pre">-fopt-info-vec</span></code> for GNU, <code class="docutils literal notranslate"><span class="pre">-qopt-report=max</span></code> for Intel’s icx/icxx compiler).</p></li>
+</ol>
+</section>
+</section>
+<section id="the-role-of-hardware-pipelining-and-stalls">
+<h3>The role of hardware: Pipelining (and stalls)<a class="headerlink" href="#the-role-of-hardware-pipelining-and-stalls" title="Link to this heading"></a></h3>
+<p>Once the compiler has produced the assembly instructions,
+the actual way they are executed depends on the hardware.</p>
+<p>After being fetched from memory,
+each assembly instruction still typically to be <em>decoded</em>
+potentially into a number of more fundamental instructions (µOPS, micro-ops)<a class="footnote-reference brackets" href="#arm" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.
+Most assembly instructions on a x86 architecture
+do take more than one cycle to complete.</p>
+<p>Since in order to fetch, decode and execute an instruction
+different elements of the CPU core are needed
+at different stages of the processing,
+in order to keep the whole CPU core busy all the time
+multiple instructions are processed at the same time
+but in different stages,
+in a <em>pipeline</em> fashion <a class="footnote-reference brackets" href="#wikipipeline" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.
+This approach is able to greatly increase throughput
+by “masking” the latency
+associated to the processing of a single instruction.</p>
+<p>Also, different instructions or µOPS<br />
+can be executed at the same time
+and even <em>out-of-order</em>,
+thanks to the <em>superscalar architecture</em>
+of modern CPUs cores
+in which some processing unit are present in multiple copies.</p>
+<section id="pipeline-stalls">
+<h4>Pipeline stalls<a class="headerlink" href="#pipeline-stalls" title="Link to this heading"></a></h4>
+<p>Pipelines can get stalled in different ways,
+for example:</p>
+<ul class="simple">
+<li><p>when waiting for data to arrive.
+In that case, typically simultaneous multithreading
+(<em>hyperthreading</em>)
+can be used efficiently to mask these latencies</p></li>
+<li><p>in a conditional statement, the evaluation of the condition
+might delay the execution of the dependent instructions.
+The hardware typically tries to compensate
+with branch prediction and speculative execution.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<hr class="footnotes docutils" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="arm" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>This is typical of x86 architectures,
+while on ARM the decoding is typically simpler.</p>
+</aside>
+<aside class="footnote brackets" id="wikipipeline" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>See for example <a class="reference external" href="https://en.wikipedia.org/wiki/Classic_RISC_pipeline">this explanation</a>
+in the RISC case.</p>
+</aside>
+</aside>
+<span id="document-sources-of-irreproducibility"></span><section id="reproducibility-problems-in-performance-measurements">
+<h2>Reproducibility problems in performance measurements<a class="headerlink" href="#reproducibility-problems-in-performance-measurements" title="Link to this heading"></a></h2>
+<p>Consistent results in measurements are paramount
+to properly inform judgement and action
+when doing performance optimization.</p>
+<section id="common-sources-of-irreproducibility">
+<h3>Common sources of irreproducibility<a class="headerlink" href="#common-sources-of-irreproducibility" title="Link to this heading"></a></h3>
+<p>If you repeat a performance measurement
+and you notice an unexpected variation,
+consider these aspects:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Non-comprehensive list of sources of irreproducibility, and their mitigations</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head stub"><p>Class</p></th>
+<th class="head"><p>Cause</p></th>
+<th class="head"><p>Mitigation/Solution</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><th class="stub"><p>Software</p></th>
+<td><p>Software versions<br />
+(dependencies)</p></td>
+<td><p>Proper dependency tracking,<br />
+with pinned<br />
+(<code class="docutils literal notranslate"><span class="pre">.lock</span></code> files, <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code>)<br />
+under <strong>version control</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><th class="stub"></th>
+<td><p>Compiler flags</p></td>
+<td><p>Automation of builds,<br />
+build scripts under VC</p></td>
+<td><p>(also for Julia)</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p>Hardware</p></th>
+<td><p>CPU frequency variations</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">likwid-setFrequencies</span></code>,<br />
+<code class="docutils literal notranslate"><span class="pre">--cpu-freq</span></code> SLURM flag,<br />
+system monitoring<br />
+(<a class="reference external" href="https://www.clustercockpit.org/">CC</a>,
+<a class="reference external" href="https://hpc-jobmon.scc.kit.edu">JM</a>),<br />
+<a class="reference external" href="https://github.com/RRZE-HPC/MachineState">MachineState</a></p></td>
+<td><p>factor of 4 observed</p></td>
+</tr>
+<tr class="row-odd"><th class="stub"></th>
+<td><p>Microcode updates</p></td>
+<td><p>Track microcode versions<br />
+(<code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">/proc/cpuinfo</span></code>)</p></td>
+<td><p>(Rare)</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p>Multithreading</p></th>
+<td><p>Thread migration<br />
+(process migration)</p></td>
+<td><p><a class="reference external" href="https://hpc-wiki.info/hpc/Binding/Pinning">thread/process pinning</a><br />
+with OMP/MPI<br />
+(<a class="reference external" href="https://github.com/RRZE-HPC/likwid/wiki/Likwid-Pin">likwid-pin</a>,<br />
+<a class="reference external" href="https://carstenbauer.github.io/ThreadPinning.jl/stable/examples/ex_pinning_julia_threads/#pinthreads">ThreadPinning.jl</a>)</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><th class="stub"></th>
+<td><p>Dynamic thread scheduling</p></td>
+<td><p>Use static scheduling instead<br />
+(if reasonable)</p></td>
+<td><p>dynamic scheduling necessary<br />
+for load balancing (at times)</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p>“Noisy Neighbour”</p></th>
+<td><p>node sharing</p></td>
+<td><p>use <code class="docutils literal notranslate"><span class="pre">--exclusive</span></code><br />
+<code class="docutils literal notranslate"><span class="pre">sbatch</span></code> allocation</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><th class="stub"></th>
+<td><p>shared filesystem<br />
+congestion</p></td>
+<td><p>Isolate, manage<br />
+and monitor I/O</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><th class="stub"></th>
+<td><p>Network congestion</p></td>
+<td><p>topology control<br />
+via <code class="docutils literal notranslate"><span class="pre">sbatch</span></code></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</div>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading"></a></h2>
+<p>The current course material is inspired by and based on:</p>
+<ul class="simple">
+<li><p>The course <a class="reference external" href="https://indico.kit.edu/event/3507/"><em>Introduction to Performance Engineering on HPC</em></a>
+by Holger Obermaier and Begatim Bytyqi from KIT</p></li>
+<li><p>The material for <a class="reference external" href="https://moodle.nhr.fau.de/course/view.php?id=55"><em>Node Level Performance Engineering</em></a> course at HLRS</p></li>
+<li><p>The <a class="reference external" href="https://en.algorithmica.org/">Algorithmica.org</a> book/website by Sergej Slotin</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<span id="document-pointer-chasing-and-latency"></span><section id="pointer-chasing-and-latency">
+<h3>Pointer Chasing and latency<a class="headerlink" href="#pointer-chasing-and-latency" title="Link to this heading"></a></h3>
+<p>It is possible to estimate the latency
+associated to different cache levels
+and to the main memory by implementing
+a pathological pattern of memory access
+where the hardware cannot at all predict
+what address will be accessed
+before the previous address
+has been loaded and read.</p>
+<p>This problem, which affects also real-life codes,
+is called <em>pointer chasing</em>
+and it is typical of code
+where objects contain references (pointers)
+to other objects, which contain references
+to other objects and so on.</p>
+<p>We will see this with a Julia example,
+based on <a class="reference external" href="https://en.algorithmica.org/hpc/cpu-cache/latency/">these notes</a>.</p>
+<section id="pointer-chasing">
+<h4>Pointer chasing<a class="headerlink" href="#pointer-chasing" title="Link to this heading"></a></h4>
+<p>This function will jump between positions in an array,
+based on addresses that are read from it:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">pointer_chasing</span><span class="p">(</span><span class="n">array_of_pointers</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Int64</span><span class="p">})</span>
+<span class="w">    </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">array_of_pointers</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array_of_pointers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>A possible way to create such an array
+so that <em>all</em> the locations are actually visited
+is:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">get_self_referential_array_random_order</span><span class="p">(</span><span class="n">array_size</span><span class="o">::</span><span class="kt">Int64</span><span class="p">)</span>
+<span class="w">    </span><span class="n">all_indices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">collect</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">array_size</span><span class="p">)</span>
+<span class="w">    </span><span class="n">single_cycle_array_visiting_order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shuffle</span><span class="p">(</span><span class="n">all_indices</span><span class="p">)</span>
+<span class="w">    </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">single_cycle_array_visiting_order</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">single_cycle_array_visiting_order</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">eachindex</span><span class="p">(</span><span class="n">single_cycle_array_visiting_order</span><span class="p">)</span>
+<span class="w">        </span><span class="n">res</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">single_cycle_array_visiting_order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="w">        </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">res</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">res</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>A quick experiment: on my laptop,
+hopping through a 16MB array
+(enough to be on main memory)
+in an ordered way
+requires
+1.2ns of latency per access on average,
+while doing the same
+in a totally random order
+requires
+69ns of latency per access on average.</p>
+</section>
+<section id="a-simple-latency-model">
+<h4>A simple latency model<a class="headerlink" href="#a-simple-latency-model" title="Link to this heading"></a></h4>
+<p>The average latency will be
+a mean of the latency associated
+to the different cache levels,
+weighted by the size of the part of the dataset
+in each cache level.</p>
+<p>A small enough array will fill in the L1 cache,
+and the resulting latency will be “pure” from L1.
+For array that “spills” into L2,
+the latency will be a combination of L1 and L2 contributions,
+and so on:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">latency_model</span><span class="p">(</span><span class="n">array_size</span><span class="o">::</span><span class="kt">Int64</span><span class="p">,</span><span class="w"> </span><span class="n">params</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># We do not care about the side of the dram, but about its latency</span>
+<span class="w">    </span><span class="c"># We also assume that the caches are exclusive</span>
+<span class="w">    </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Int</span><span class="p">((</span><span class="n">length</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">sizes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">levels</span><span class="p">]</span>
+<span class="w">    </span><span class="n">cumsizes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumsum</span><span class="p">(</span><span class="n">cat</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">sizes</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">    </span><span class="n">latencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">params</span><span class="p">[</span><span class="n">levels</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="p">]</span>
+
+<span class="w">    </span><span class="n">cache_contribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">latency</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">array_size</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cumsize</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">array_size</span>
+<span class="w">                             </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">cumsize</span><span class="p">,</span><span class="w"> </span><span class="n">latency</span><span class="p">)</span>
+<span class="w">                             </span><span class="k">in</span>
+<span class="w">                             </span><span class="n">zip</span><span class="p">(</span><span class="n">sizes</span><span class="p">,</span><span class="w"> </span><span class="n">cumsizes</span><span class="p">,</span><span class="w"> </span><span class="n">latencies</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">array_size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">cumsize</span><span class="p">))</span>
+<span class="w">    </span><span class="n">dram_contribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">array_size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">sizes</span><span class="p">))</span>
+<span class="w">        </span><span class="p">(</span><span class="n">array_size</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">sizes</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">array_size</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">latencies</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="mi">0</span>
+<span class="w">    </span><span class="k">end</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">cache_contribution</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dram_contribution</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>The parameters of the model are:</p>
+<ul class="simple">
+<li><p>the cache sizes</p></li>
+<li><p>the latency of all the cache levels,
+and the main memory latency</p></li>
+</ul>
+<p>Fitting the latency model to the measured latencies
+requires a some care
+(enough data points, sensible initial values for the parameters,
+sensible form for the residuals)</p>
+<p><img alt="" src="_images/latency.png" /></p>
+<p>The output of
+the <a class="reference download internal" download="" href="_downloads/248a328e1c442a613e1c9a3103bf672b/pointer-chasing-and-latency.jl"><span class="xref download myst">full julia script</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Fit</span> <span class="n">results</span> <span class="p">(</span><span class="n">assuming</span> <span class="mi">3</span> <span class="n">cache</span> <span class="n">levels</span> <span class="o">+</span> <span class="n">dram</span><span class="p">):</span>
+	<span class="n">size</span><span class="p">:</span> <span class="mi">54</span> <span class="n">KiB</span> <span class="n">latency</span><span class="p">:</span> <span class="mi">1</span> <span class="n">ns</span>
+	<span class="n">size</span><span class="p">:</span> <span class="mi">1186</span> <span class="n">KiB</span> <span class="n">latency</span><span class="p">:</span> <span class="mi">4</span> <span class="n">ns</span>
+	<span class="n">size</span><span class="p">:</span> <span class="mi">6034</span> <span class="n">KiB</span> <span class="n">latency</span><span class="p">:</span> <span class="mi">14</span> <span class="n">ns</span>
+	<span class="n">Main</span> <span class="n">memory</span> <span class="n">latency</span><span class="p">:</span> <span class="mf">89.08</span> <span class="n">ns</span>
+</pre></div>
+</div>
+<p>The times have been measured with <code class="docutils literal notranslate"><span class="pre">&#64;btime</span></code>.</p>
+<p>The initial values from the cache sizes sizes
+(48KiB, 1.25MiB and 8 MiB)
+are actually from <code class="docutils literal notranslate"><span class="pre">likwid-topology</span></code>,
+so the deviation from the values resulting from the fit
+give an idea of the systematic error in the procedure.</p>
+<p>By fixing the cache sizes to the initial, “official” values,
+we get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Fit</span> <span class="n">results</span> <span class="p">(</span><span class="n">assuming</span> <span class="mi">3</span> <span class="n">cache</span> <span class="n">levels</span> <span class="o">+</span> <span class="n">dram</span><span class="p">):</span>
+	<span class="n">size</span><span class="p">:</span> <span class="mi">48</span> <span class="n">KiB</span> <span class="n">latency</span><span class="p">:</span> <span class="mi">1</span> <span class="n">ns</span>
+	<span class="n">size</span><span class="p">:</span> <span class="mi">1282</span> <span class="n">KiB</span> <span class="n">latency</span><span class="p">:</span> <span class="mi">4</span> <span class="n">ns</span>
+	<span class="n">size</span><span class="p">:</span> <span class="mi">8192</span> <span class="n">KiB</span> <span class="n">latency</span><span class="p">:</span> <span class="mi">16</span> <span class="n">ns</span>
+	<span class="n">Main</span> <span class="n">memory</span> <span class="n">latency</span><span class="p">:</span> <span class="mf">116.02</span> <span class="n">ns</span>
+</pre></div>
+</div>
+</section>
+</section>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Michele Mesiti, Holger Obermaier, Begatim Bytyqi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

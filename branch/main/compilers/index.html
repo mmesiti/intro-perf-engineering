@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What a compiler (and the hardware) can do for you &mdash; Introduction to Performance Engineering  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=949a1ff5" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css?v=e9df6548" />
+      <link rel="stylesheet" type="text/css" href="../_static/term_role_formatting.css?v=4194e21c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_rtd_theme_ext_color_contrast.css?v=8e8ea19f" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=187304be"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=582ca9e2"></script>
+      <script src="../_static/minipres.js?v=a0d29692"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=b8b12719"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script data-domain="coderefinery.github.io" defer="defer" src="https://plausible.cs.aalto.fi/js/script.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Reproducibility problems in performance measurements" href="../sources-of-irreproducibility/" />
+    <link rel="prev" title="A brief LIKWID demo: topology and microbenchmarks" href="../notebooks/likwid/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../" class="icon icon-home">
+            Introduction to Performance Engineering
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Episodes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../loop/">The closed loop of performance tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../application-diagnostics/">Performance Characterization of applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/matmul/">Walkthrough: Dense Matrix-Matrix multiplications (Part 1)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../computer-architecture/">Elements of Computer Architecture and their effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/likwid/">A brief LIKWID demo: topology and microbenchmarks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">What a compiler (and the hardware) can do for you</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#compiler-as-magicians">Compiler as magicians</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-optimizations-enabled-via-flags">Common optimizations enabled via flags</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-help-a-compiler">How to help a compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automatic-vectorization">Automatic vectorization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-role-of-hardware-pipelining-and-stalls">The role of hardware: Pipelining (and stalls)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-stalls">Pipeline stalls</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../sources-of-irreproducibility/">Reproducibility problems in performance measurements</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Supplementary Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pointer-chasing-and-latency/">Pointer Chasing and latency</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">Introduction to Performance Engineering</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">What a compiler (and the hardware) can do for you</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/mmesiti/intro-perf-engineering/blob/main/content/compilers.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="what-a-compiler-and-the-hardware-can-do-for-you">
+<h1>What a compiler (and the hardware) can do for you<a class="headerlink" href="#what-a-compiler-and-the-hardware-can-do-for-you" title="Link to this heading"></a></h1>
+<section id="compiler-as-magicians">
+<h2>Compiler as magicians<a class="headerlink" href="#compiler-as-magicians" title="Link to this heading"></a></h2>
+<p>With the right flags, compilers can do automatically:</p>
+<ul class="simple">
+<li><p>common subexpression elimination</p></li>
+<li><p>Loop unrolling</p></li>
+<li><p>Loop reordering</p></li>
+<li><p>Auto vectorization</p></li>
+<li><p>Some compilers (i.e., Intel) also
+can auto-parallelize loops using shared-memory parallelization.</p></li>
+</ul>
+<p>Note: Some advanced optimization options
+can actually change subtly
+the actual behaviour of the code.</p>
+<section id="common-optimizations-enabled-via-flags">
+<h3>Common optimizations enabled via flags<a class="headerlink" href="#common-optimizations-enabled-via-flags" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Generation of machine instructions
+for a specific architecture.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-Olevel</span></code>: Different optimization levels “meta” options,
+typically corresponding to a set of flags
+for specific optimizations.
+Higher levels typically include all the optimization flags
+included lower levels, plus more.</p>
+<p>Higher optimization levels
+tend to:</p>
+<ul class="simple">
+<li><p>offer higher performance binaries
+(even by orders of magnitude),</p></li>
+<li><p>increase the compilation times.</p></li>
+<li><p>remove checks and debugging information</p></li>
+</ul>
+<p>For this reason, consider:</p>
+<ul class="simple">
+<li><p>For testing during your usual development loop, use <code class="docutils literal notranslate"><span class="pre">-O0</span></code></p></li>
+<li><p>For debugging, use <code class="docutils literal notranslate"><span class="pre">-Og</span></code> (if available)</p></li>
+<li><p>For performance: use <code class="docutils literal notranslate"><span class="pre">-O2</span></code>/<code class="docutils literal notranslate"><span class="pre">-O3</span></code> or <code class="docutils literal notranslate"><span class="pre">-Ofast</span></code></p></li>
+</ul>
+<div class="admonition-compilation-options-rtfm exercise important admonition" id="exercise-0">
+<p class="admonition-title">Compilation options: RTFM</p>
+<p>Familiarize yourself with the manual of the GNU
+and Intel compiler,
+with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>man<span class="w"> </span>gcc
+</pre></div>
+</div>
+<p>for the GNU C compiler, and</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>man<span class="w"> </span>icx
+</pre></div>
+</div>
+<p>for the Intel C compiler.</p>
+<p>If you are doing this on a HPC system,
+you might need to load the appropriate modules
+to make the manpages for the compilers available.</p>
+<p>What are the default optimization options in both cases?</p>
+</div>
+<p>Note: different compilers have
+different default values of <code class="docutils literal notranslate"><span class="pre">-Olevel</span></code>,
+some defaulting to <code class="docutils literal notranslate"><span class="pre">-O0</span></code>, some to <code class="docutils literal notranslate"><span class="pre">-O2</span></code>.</p>
+</li>
+<li><p>“fast math” optimization options: these allow the compiler
+to use versions of the math functions
+that do not have to comply to standard, and thus could be faster.</p></li>
+</ul>
+</section>
+<section id="how-to-help-a-compiler">
+<h3>How to help a compiler<a class="headerlink" href="#how-to-help-a-compiler" title="Link to this heading"></a></h3>
+<p>There are some modifications
+that might help a compiler
+produce better assembly code.</p>
+<ul class="simple">
+<li><p>Avoid pointer hopping and indirect addressing
+(this requirement, in higher level languages,
+also translates in avoiding dynamic typing
+in some situations)</p></li>
+<li><p>Loop unrolling
+(this can be done automatically by modern compilers)</p></li>
+</ul>
+</section>
+<section id="automatic-vectorization">
+<h3>Automatic vectorization<a class="headerlink" href="#automatic-vectorization" title="Link to this heading"></a></h3>
+<p>Vectorized instructions represent
+one of the most important ways to get high performance
+from modern CPUs.</p>
+<ul class="simple">
+<li><p>Use an appropriate memory layout.
+Going from an <em>Array of Structures</em> (AoS)
+to a <em>Structure of Array</em> (SoA) layout
+might help.
+Reads and writes must be done in 128/256/512 bit chunks.</p></li>
+<li><p>Avoid complex logic in loops that could be vectorized,
+in particular:</p>
+<ul>
+<li><p>conditionals (e.g., <code class="docutils literal notranslate"><span class="pre">if</span></code> statements)</p></li>
+<li><p>calls to non-trivial functions that cannot be inlined.</p></li>
+</ul>
+</li>
+</ul>
+<p>To verify the result of the vectorization,
+there are a few options</p>
+<ol class="arabic simple">
+<li><p>Get the assembly output either by</p>
+<ul class="simple">
+<li><p>running <code class="docutils literal notranslate"><span class="pre">objdump</span> <span class="pre">-d</span></code> on the object file produced (can work also with the final linked binary, but might be way larger)</p></li>
+<li><p>compile the source file with the <code class="docutils literal notranslate"><span class="pre">-s</span></code> option</p></li>
+</ul>
+</li>
+<li><p>Get the information from the compiler in the form of a vectorization report (<code class="docutils literal notranslate"><span class="pre">-fopt-info-vec</span></code> for GNU, <code class="docutils literal notranslate"><span class="pre">-qopt-report=max</span></code> for Intel’s icx/icxx compiler).</p></li>
+</ol>
+</section>
+</section>
+<section id="the-role-of-hardware-pipelining-and-stalls">
+<h2>The role of hardware: Pipelining (and stalls)<a class="headerlink" href="#the-role-of-hardware-pipelining-and-stalls" title="Link to this heading"></a></h2>
+<p>Once the compiler has produced the assembly instructions,
+the actual way they are executed depends on the hardware.</p>
+<p>After being fetched from memory,
+each assembly instruction still typically to be <em>decoded</em>
+potentially into a number of more fundamental instructions (µOPS, micro-ops)<a class="footnote-reference brackets" href="#arm" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.
+Most assembly instructions on a x86 architecture
+do take more than one cycle to complete.</p>
+<p>Since in order to fetch, decode and execute an instruction
+different elements of the CPU core are needed
+at different stages of the processing,
+in order to keep the whole CPU core busy all the time
+multiple instructions are processed at the same time
+but in different stages,
+in a <em>pipeline</em> fashion <a class="footnote-reference brackets" href="#wikipipeline" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.
+This approach is able to greatly increase throughput
+by “masking” the latency
+associated to the processing of a single instruction.</p>
+<p>Also, different instructions or µOPS<br />
+can be executed at the same time
+and even <em>out-of-order</em>,
+thanks to the <em>superscalar architecture</em>
+of modern CPUs cores
+in which some processing unit are present in multiple copies.</p>
+<section id="pipeline-stalls">
+<h3>Pipeline stalls<a class="headerlink" href="#pipeline-stalls" title="Link to this heading"></a></h3>
+<p>Pipelines can get stalled in different ways,
+for example:</p>
+<ul class="simple">
+<li><p>when waiting for data to arrive.
+In that case, typically simultaneous multithreading
+(<em>hyperthreading</em>)
+can be used efficiently to mask these latencies</p></li>
+<li><p>in a conditional statement, the evaluation of the condition
+might delay the execution of the dependent instructions.
+The hardware typically tries to compensate
+with branch prediction and speculative execution.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<hr class="footnotes docutils" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="arm" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>This is typical of x86 architectures,
+while on ARM the decoding is typically simpler.</p>
+</aside>
+<aside class="footnote brackets" id="wikipipeline" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>See for example <a class="reference external" href="https://en.wikipedia.org/wiki/Classic_RISC_pipeline">this explanation</a>
+in the RISC case.</p>
+</aside>
+</aside>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../notebooks/likwid/" class="btn btn-neutral float-left" title="A brief LIKWID demo: topology and microbenchmarks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../sources-of-irreproducibility/" class="btn btn-neutral float-right" title="Reproducibility problems in performance measurements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Michele Mesiti, Holger Obermaier, Begatim Bytyqi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
