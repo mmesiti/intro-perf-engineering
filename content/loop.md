@@ -3,8 +3,8 @@
 ## Before starting: ensuring correctness 
 
 Performance tuning requires to change 
-aspect of the software.
-This might unadvertently break it.
+the software in some way,
+and this might unadvertently break it.
 
 ````{discussion}
 

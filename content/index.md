@@ -40,6 +40,7 @@ caption: Episodes
 
 loop
 application-diagnostics
+notebooks/matmul.ipynb
 computer-architecture
 notebooks/likwid.ipynb
 compilers

@@ -107,23 +107,51 @@ there are a few options
    - compile the source file with the `-s` option 
 2. Get the information from the compiler in the form of a vectorization report (`-fopt-info-vec` for GNU, `-qopt-report=max` for Intel's icx/icxx compiler).
 
-## The role of hardware
+## The role of hardware: Pipelining (and stalls)
 
 Once the compiler has produced the assembly instructions,
-the 
+the actual way they are executed depends on the hardware.
 
-Each assembly instruction still needs to be decoded
-into a number of more fundamental instructions.
-This is done by the hardware.
+After being fetched from memory,
+each assembly instruction still typically to be *decoded*
+potentially into a number of more fundamental instructions (µOPS, micro-ops)[^ARM].
 Most assembly instructions on a x86 architecture
-do take more than one cycle to complete,
-but multiple instructions 
+do take more than one cycle to complete.
+
+[^ARM]: This is typical of x86 architectures, 
+        while on ARM the decoding is typically simpler.
+
+Since in order to fetch, decode and execute an instruction
+different elements of the CPU core are needed 
+at different stages of the processing,
+in order to keep the whole CPU core busy all the time 
+multiple instructions are processed at the same time
+but in different stages, 
+in a *pipeline* fashion [^wikipipeline].
+This approach is able to greatly increase throughput
+by "masking" the latency 
+associated to the processing of a single instruction.
+
+[^wikipipeline]: See for example [this explanation](https://en.wikipedia.org/wiki/Classic_RISC_pipeline) 
+                 in the RISC case.
+
+Also, different instructions or µOPS   
 can be executed at the same time
-thanks to the superscalar architecture 
-of modern CPUs,
-so they are executed in a *pipeline*.
+and even *out-of-order*,
+thanks to the *superscalar architecture* 
+of modern CPUs cores
+in which some processing unit are present in multiple copies.
+
+
+### Pipeline stalls
 
 Pipelines can get stalled in different ways,
 for example:
-- when waiting for data to arrive. In that case, typically simultaneous multithreading can be used efficiently to mask these latencies 
-- in a conditional statement, the evaluation of the condition might delay the execution of the dependent instructions. The hardware typically tries to compensate with branch prediction and speculative execution.  
+- when waiting for data to arrive. 
+  In that case, typically simultaneous multithreading 
+  (*hyperthreading*) 
+  can be used efficiently to mask these latencies 
+- in a conditional statement, the evaluation of the condition 
+  might delay the execution of the dependent instructions. 
+  The hardware typically tries to compensate 
+  with branch prediction and speculative execution.  

@@ -47,6 +47,7 @@ For an exploration, see [this notebook](./notebooks/likwid.ipynb)
   | Network (IB)      | <100GB/s   |           | -     |                     |
   | Local SDD         | ~1GB/s     |           | ~1TB  |                     |
   | Global Filesystem | ~50GB/s    |           | ~PBs  |                     |
+  | Tape              |            |  ~1min    |       |                     |
 
 ```
 
@@ -99,8 +100,22 @@ in two main ways:
 
  - Cache levels can also be inclusive, esclusive or neither
    ([cache inclusion policy](https://en.wikipedia.org/wiki/Cache_inclusion_policy)).
-   
- - When working with multiple threads,
+  
+````{exercise} False sharing
+
+What is the best way to split 
+embarrassingly parallel work on an array
+by N threads?
+
+1. Thread 0 works on element 0, Thread 1 works on element 1 
+   and in general Thread `i` works on elements `k*nthreads+i`;
+
+2. Array is split in `nthreads` contiguous chunks, 
+   every thread works on a chunk.
+ 
+```{solution}
+
+  When working with multiple threads,
    be aware that different threads working on different cores
    accessing the same data might "fight" 
    over a single cache line,
@@ -108,9 +123,26 @@ in two main ways:
    of the data to both threads.
    In that situation, called *false sharing*,
    the workload becomes latency-bound.
+   For this reason, typically the best approach is **2**.
    
+   Note that this is exactly the opposite
+   to what is done when writing GPU kernels,
+   where each thread in a thread block
+   works typically on data that is close 
+   to the data on which the other members
+   of the thread bloc operate:
+   we are operating at another granularity level.
+``` 
+   
+```` 
    
 ## Main memory
+
+Rows and columns: memory is usually accessed in rows and columns.
+If different data is read from the same row repeatedly,
+then access is typically noticeably faster.
+This is another reason why sequential access 
+can be much faster than random access.
 
 
 

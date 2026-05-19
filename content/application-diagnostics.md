@@ -7,7 +7,7 @@ There is a myriad of tools that can be used
 to study the performance of applications.
 
 
-```{list-table} Taxonomy of performance analysis techniques}
+```{list-table} Taxonomy of performance analysis techniques and tools}
 :header-rows: 1
 :stub-columns: 1
 
@@ -25,7 +25,8 @@ to study the performance of applications.
 * - Profiling - Sampling
   - low overhead,  
     imprecise results
-  - [Perf](https://www.brendangregg.com/perf.html),  
+  - [Perf](https://perfwiki.github.io/main/),  
+    gprof,  
     Intel VTune,  
     Julia's Profile
   - Best for initial assessment
@@ -34,8 +35,8 @@ to study the performance of applications.
   - precise results,  
     overhead needs  
     to be managed
-  - score-p/scalasca  
-    LIKWID (marker API)  
+  - [score-p/scalasca](https://www.vi-hps.org/)  
+    [LIKWID](https://github.com/RRZE-HPC/likwid/wiki) (marker API)  
     Python's cProfile  
     gprof  
     GPU profilers 
@@ -43,6 +44,13 @@ to study the performance of applications.
     to observe,  
     estimate overhead  
     from baseline
+* - Simulation
+  - Precision, 
+    deep understanding,  
+    extremely slow
+  - valgrind/callgrind,  
+    machine code analysis
+  - 
 * - Tracing
   - show task   
     dependencies,  
@@ -57,40 +65,4 @@ to study the performance of applications.
     
 ```
 
-- Profiling
 
-  - Sampling
-
-    - Advantages: lower overhead
-    - Disadvantages: lack of precision 
-
-  - Instrumentation
-
-    - Advantages: higher overhead, must be always checked
-    - Disadvantages: lack of precision 
-
-  - Tools:
-    - Intel
-    - NVidia
-    - AMD
-    - Python's cProfile
-    - Julia's Profile
-    - [perf](https://www.brendangregg.com/perf.html)
-    - Score-p, Scalasca and the whole system of tools ([VI-HPS](https://www.vi-hps.org/))
-    - gprof
-    - LIKWID
-
-- Tracing
-  - Instrumentation
-
-- Performance Counters
-
-- Visualization
-  - Flame Graph
-  - Tree representations
-  - Gantt plots (timeline)
-  - Time Series plots
-
-- Performance Modelling and simulation
-  - Valgrind
-  - Machine Code Analysis
